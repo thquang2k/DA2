@@ -210,35 +210,35 @@ const addProduct = async (req, res, next) => {
             brand_id: brandId
         })
         let productName = req.body.productName
-                if(!productName){
-                    res.status(400).json({
-                        message: "Product name is required"
-                    })
-                }
-                let productDescription = req.body.productDescription
-                if(!productDescription){
-                    res.status(400).json({
-                        message: "Product description is required"
-                    })
-                }
-                let cpuBrand = req.body.cpuBrand
-                if(!cpuBrand){
-                    res.status(400).json({
-                        message: "Cpu brand is required"
-                    })
-                }
-                let size = req.body.size
-                if(!size){
-                    res.status(400).json({
-                        message: "Product size is required"
-                    })
-                }
-                let featureImgSrc = req.body.featureImgSrc
-                if(!featureImgSrc){
-                    res.status(400).json({
-                        message: "Product feature img is required"
-                    })
-                }
+        if(!productName){
+            res.status(400).json({
+                message: "Product name is required"
+            })
+        }
+        let productDescription = req.body.productDescription
+        if(!productDescription){
+            res.status(400).json({
+                message: "Product description is required"
+            })
+        }
+        let cpuBrand = req.body.cpuBrand
+        if(!cpuBrand){
+            res.status(400).json({
+                message: "Cpu brand is required"
+            })
+        }
+        let size = req.body.size
+        if(!size){
+            res.status(400).json({
+                message: "Product size is required"
+            })
+        }
+        let featureImgSrc = req.body.featureImgSrc
+        if(!featureImgSrc){
+            res.status(400).json({
+                message: "Product feature img is required"
+            })
+        }
         switch (categoryId) {
             case "LT":
                 let vgaBrand = req.body.vgaBrand
@@ -281,6 +281,166 @@ const addProduct = async (req, res, next) => {
                     message: `Invalid category ID`
                 })
                 break;
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+const addLaptop = async (req, res, next) => {
+    try {
+        let brandId = req.body.brandId
+        if(!brandId){
+            res.status(400).json({
+                message: "brand ID is required"
+            })
+        }else{
+            let brand = await Brand.findOne({brand_id: brandId})
+            if(!brand){
+                res.status(400).json({
+                    message: `Brand with ID ${brandId} is not exist`
+                })
+            }
+        }
+        let productName = req.body.productName
+        if(!productName){
+            res.status(400).json({
+                message: "Product name is required"
+            })
+        }
+        let productDescription = req.body.productDescription
+        if(!productDescription){
+            res.status(400).json({
+                message: "Product description is required"
+            })
+        }
+        let cpuBrand = req.body.cpuBrand
+        if(!cpuBrand){
+            res.status(400).json({
+                message: "Cpu brand is required"
+            })
+        }
+        let size = req.body.size
+        if(!size){
+            res.status(400).json({
+                message: "Product size is required"
+            })
+        }
+        let featureImgSrc = req.body.featureImgSrc
+        if(!featureImgSrc){
+            res.status(400).json({
+                message: "Product feature img is required"
+            })
+        }
+        let productCount = Product.countDocuments()
+        let productId = "LT" + brandId + (productCount + 1)
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+const addCellphone = async (req, res, next) => {
+    try {
+        let brandId = req.body.brandId
+        if(!brandId){
+            res.status(400).json({
+                message: "brand ID is required"
+            })
+        }else{
+            let brand = await Brand.findOne({brand_id: brandId})
+            if(!brand){
+                res.status(400).json({
+                    message: `Brand with ID ${brandId} is not exist`
+                })
+            }
+        }
+        let productName = req.body.productName
+        if(!productName){
+            res.status(400).json({
+                message: "Product name is required"
+            })
+        }
+        let productDescription = req.body.productDescription
+        if(!productDescription){
+            res.status(400).json({
+                message: "Product description is required"
+            })
+        }
+        let cpuBrand = req.body.cpuBrand
+        if(!cpuBrand){
+            res.status(400).json({
+                message: "Cpu brand is required"
+            })
+        }
+        let size = req.body.size
+        if(!size){
+            res.status(400).json({
+                message: "Product size is required"
+            })
+        }
+        let featureImgSrc = req.body.featureImgSrc
+        if(!featureImgSrc){
+            res.status(400).json({
+                message: "Product feature img is required"
+            })
+        }
+        let productCount = Product.countDocuments()
+        let productId = "CP" + brandId + (productCount + 1)
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+const updateLaptopById = async (req, res, next) => {
+    try {
+        let productId = req.params.productId
+        if(!productId){
+            res.status(400).json({
+                message: `Product ID is required!`
+            })
+        }else{
+            let product = await Laptop.findOne({product_id: productId})
+            if(!product){
+                res.status(400).json({
+                    message: `Cannot find laptop with ID ${productId}!`
+                })
+            }else{
+
+                res.status(200).json({
+                    message: `Get Laptop with Product ID ${productId} succeeded!`,
+                    product: product
+                })
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+const updateCellphoneById = async (req, res, next) => {
+    try {
+        let productId = req.params.productId
+        if(!productId){
+            res.status(400).json({
+                message: `Product ID is required!`
+            })
+        }else{
+            let product = await Laptop.findOne({product_id: productId})
+            if(!product){
+                res.status(400).json({
+                    message: `Cannot find laptop with ID ${productId}!`
+                })
+            }else{
+                
+                res.status(200).json({
+                    message: `Get Laptop with Product ID ${productId} succeeded!`,
+                    product: product
+                })
+            }
         }
     } catch (error) {
         res.status(500).json({
