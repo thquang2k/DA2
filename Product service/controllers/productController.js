@@ -1,6 +1,8 @@
 const Product = require('../models/productModel')
 const Laptop  = require('../models/laptopModel')
 const Cellphone = require('../models/cellphoneModel')
+const Brand = require('../models/brandModel')
+const Category = require('../models/categoryModel')
 
 const getAllLaptop = async (req, res, next) => {
     try {
@@ -65,6 +67,122 @@ const getAllProduct = async (req, res, next) => {
                 message: `Get all products succeeded`,
                 products: productList
             })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+
+const addProduct = async (req, res, next) => {
+    try {
+        let brandId = req.body.brandId
+        if(!brandId){
+            res.status(400).json({
+                message: "brand ID is required"
+            })
+        }else{
+            let brand = await Brand.findOne({brand_id: brandId})
+            if(!brand){
+                res.status(400).json({
+                    message: `Brand with ID ${brandId} is not exist`
+                })
+            }
+        }
+
+        let categoryId = req.body.categoryId
+        if(!categoryId){
+            res.status(400).json({
+                message: "category ID is required"
+            })
+        }else{
+            let category = await Category.findOne({category_id: categoryId})
+            if(!category){
+                res.status(400).json({
+                    message: `Category with ID ${categoryId} is not exist`
+                })
+            }
+        }
+        let productCount = Product.countDocuments()
+        let productId = categoryId + brandId + (productCount + 1)
+        let product = new Product({
+            product_id: productId,
+            category_id: categoryId,
+            brand_id: brandId
+        })
+        let productName = req.body.productName
+                if(!productName){
+                    res.status(400).json({
+                        message: "Product name is required"
+                    })
+                }
+                let productDescription = req.body.productDescription
+                if(!productDescription){
+                    res.status(400).json({
+                        message: "Product description is required"
+                    })
+                }
+                let cpuBrand = req.body.cpuBrand
+                if(!cpuBrand){
+                    res.status(400).json({
+                        message: "Cpu brand is required"
+                    })
+                }
+                let size = req.body.size
+                if(!size){
+                    res.status(400).json({
+                        message: "Product size is required"
+                    })
+                }
+                let featureImgSrc = req.body.featureImgSrc
+                if(!featureImgSrc){
+                    res.status(400).json({
+                        message: "Product feature img is required"
+                    })
+                }
+        switch (categoryId) {
+            case "LT":
+                let vgaBrand = req.body.vgaBrand
+                if(!vgaBrand){
+                    res.status(400).json({
+                        message: "Vga brand is required"
+                    })
+                }
+                const laptop = new Laptop({
+                    product_id: productId,
+                    brand_id: brandId,
+                    product_name: productName,
+                    description: productDescription,
+                    cpu_brand: cpuBrand,
+                    vga_brand: vgaBrand,
+                    size: size,
+                    feature_img_src: featureImgSrc
+                })
+                break;
+            case "CP":
+                let os = req.body.os
+                if(!os){
+                    res.status(400).json({
+                        message: "Vga brand is required"
+                    })
+                }
+                const cellphone = new Cellphone({
+                    product_id: productId,
+                    brand_id: brandId,
+                    product_name: productName,
+                    description: productDescription,
+                    cpu_brand: cpuBrand,
+                    os: os,
+                    size: size,
+                    feature_img_src: featureImgSrc
+                })
+                break;
+            default:
+                res.status(400).json({
+                    message: `Invalid category ID`
+                })
+                break;
         }
     } catch (error) {
         res.status(500).json({
