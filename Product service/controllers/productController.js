@@ -74,6 +74,104 @@ const getAllProduct = async (req, res, next) => {
         })
     }
 }
+const getProductById = async (req, res, next) => {
+    try {
+        let productId = req.params.productId
+        if(!productId){
+            res.status(400).json({
+                message: `Product ID is required!`
+            })
+        }else{
+            let product = await Product.findOne({product_id: productId})
+            if(!product){
+                res.status(400).json({
+                    message: `Cannot find product with ID ${productId}!`
+                })
+            }else{
+                switch (product.category_id) {
+                    case "LT":
+                        let laptop = await Laptop.findOne({product_id:productId})
+                        if(!laptop){
+                            res.status(400).json({
+                                message: `Cannot find laptop with ID ${productId}!`
+                            })
+                        }else{
+                            product = laptop
+                        }
+                        break;
+                    case "CP":
+                        let cellphone = await Cellphone.findOne({product_id:productId})
+                        if(!cellphone){
+                            res.status(400).json({
+                                message: `Cannot find laptop with ID ${productId}!`
+                            })
+                        }else{
+                            product = cellphone
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+const getLaptopById = async (req, res, next) => {
+    try {
+        let productId = req.params.productId
+        if(!productId){
+            res.status(400).json({
+                message: `Product ID is required!`
+            })
+        }else{
+            let product = await Laptop.findOne({product_id: productId})
+            if(!product){
+                res.status(400).json({
+                    message: `Cannot find laptop with ID ${productId}!`
+                })
+            }else{
+                res.status(200).json({
+                    message: `Get Laptop with Product ID ${productId} succeeded!`,
+                    product: product
+                })
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
+const getCellphoneById = async (req, res, next) => {
+    try {
+        let productId = req.params.productId
+        if(!productId){
+            res.status(400).json({
+                message: `Product ID is required!`
+            })
+        }else{
+            let product = await Cellphone.findOne({product_id: productId})
+            if(!product){
+                res.status(400).json({
+                    message: `Cannot find cellphone with ID ${productId}!`
+                })
+            }else{
+                res.status(200).json({
+                    message: `Get cellphone with Product ID ${productId} succeeded!`,
+                    product: product
+                })
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: `Error: ${error.message}`
+        })
+    }
+}
 
 const addProduct = async (req, res, next) => {
     try {
@@ -164,7 +262,7 @@ const addProduct = async (req, res, next) => {
                 let os = req.body.os
                 if(!os){
                     res.status(400).json({
-                        message: "Vga brand is required"
+                        message: "OS name is required"
                     })
                 }
                 const cellphone = new Cellphone({
