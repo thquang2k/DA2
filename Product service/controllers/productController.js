@@ -335,6 +335,41 @@ const addLaptop = async (req, res, next) => {
         }
         let productCount = Product.countDocuments()
         let productId = "LT" + brandId + (productCount + 1)
+        const laptop = new Laptop({
+                    product_id: productId,
+                    brand_id: brandId,
+                    product_name: productName,
+                    description: productDescription,
+                    cpu_brand: cpuBrand,
+                    vga_brand: vgaBrand,
+                    size: size,
+                    feature_img_src: featureImgSrc
+                })
+
+        let save = await laptop.save()
+        if(save){
+            const product = new Product({
+            product_id: productId,
+            category_id: "LT",
+            brand_id: brandId
+            })
+            let productSave = await product.save()
+            if(productSave){
+                res.status(200).json({
+                    message: `Laptop added`,
+                    laptop: laptop,
+                    product: product
+                })
+            }else{
+                res.status(400).json({
+                message: "Product save failed!"
+                })
+            }
+        }else{
+            res.status(400).json({
+                message: "Laptop save failed!"
+            })
+        }
     } catch (error) {
         res.status(500).json({
             message: `Error: ${error.message}`
