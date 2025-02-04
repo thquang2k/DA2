@@ -25,6 +25,10 @@ const laptopVariantSchema = new mongoose.Schema({
     },
     promotion_id: {
         type: String
+    },
+    stock: {
+        type: Number,
+        default: 0
     }
 },{
     timestamps: true
