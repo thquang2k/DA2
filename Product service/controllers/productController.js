@@ -239,6 +239,7 @@ const addProduct = async (req, res, next) => {
                 message: "Product feature img is required"
             })
         }
+        let save;
         switch (categoryId) {
             case "LT":
                 let vgaBrand = req.body.vgaBrand
@@ -247,7 +248,7 @@ const addProduct = async (req, res, next) => {
                         message: "Vga brand is required"
                     })
                 }
-                const laptop = new Laptop({
+                let laptop = new Laptop({
                     product_id: productId,
                     brand_id: brandId,
                     product_name: productName,
@@ -257,6 +258,7 @@ const addProduct = async (req, res, next) => {
                     size: size,
                     feature_img_src: featureImgSrc
                 })
+                save = await laptop.save();
                 break;
             case "CP":
                 let os = req.body.os
@@ -265,7 +267,7 @@ const addProduct = async (req, res, next) => {
                         message: "OS name is required"
                     })
                 }
-                const cellphone = new Cellphone({
+                let cellphone = new Cellphone({
                     product_id: productId,
                     brand_id: brandId,
                     product_name: productName,
@@ -275,12 +277,16 @@ const addProduct = async (req, res, next) => {
                     size: size,
                     feature_img_src: featureImgSrc
                 })
+                save = await cellphone.save()
                 break;
             default:
                 res.status(400).json({
                     message: `Invalid category ID`
                 })
                 break;
+        }
+        if(save){
+            await product.save()
         }
     } catch (error) {
         res.status(500).json({
@@ -461,6 +467,8 @@ const addCellphone = async (req, res, next) => {
                     product: product
                 })
             }else{
+                //rollback cellphone added
+                await Cellphone.remove({product_id: productId})
                 res.status(400).json({
                 message: "Product save failed!"
                 })
