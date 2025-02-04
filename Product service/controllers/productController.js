@@ -761,3 +761,17 @@ const removeCellphoneById = async (req, res, next) => {
         })
     }
 }
+
+module.exports = {
+    getAllProduct,
+    getAllCellphone,
+    getAllLaptop,
+    addProduct,
+    addCellphone,
+    addLaptop,
+    updateCellphoneById,
+    updateLaptopById,
+    removeProductById,
+    removeLaptopById,
+    removeCellphoneById
+}
