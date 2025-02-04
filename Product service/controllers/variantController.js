@@ -1,5 +1,9 @@
+const Laptop = require('../models/laptopModel')
+const cellphone = require('../models/cellphoneModel')
 const LaptopVariant = require('../models/laptopVariantModel')
 const CellphoneVariant = require('../models/cellphoneVariantModel')
+const LaptopVariantField = require('../models/laptopVariantFieldModel')
+const CellphoneVariantField = require('../models/cellphoneVariantFieldModel')
 
 const getAllLaptopVariantsByProductId = async (req, res, next) => {
     try {
@@ -102,6 +106,246 @@ const getCellphoneVariantById = async (req, res, next) => {
                 })
             }
         }
+    } catch (error) {
+        res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
+
+const createLaptopVariant = async (req, res, next) => {
+    try {
+        let productId = req.params.productId
+        if(!productId){
+            res.status(400).json({
+                message: "Product ID is required!"
+            })
+        }else{
+            let laptop = await Laptop.findOne({product_id: productId})
+            if(!laptop){
+                res.status(400).json({
+                    message: `Laptop with ID ${productId} is not exist!`
+                })
+            }else{
+                //Variant info
+                let variantName = req.body.variant.name
+                if(!variantName){
+                    res.status(400).json({
+                        message: "Variant Name is required!"
+                    })
+                }
+                let price = req.body.variant.price
+                if(!price){
+                    res.status(400).json({
+                        message: "Price is required!"
+                    })
+                }
+                let promotionId = req.body.variant.promotionId
+                if(!promotionId){
+                    promotionId = "None";
+                }
+                let stock = req.body.variant.stock
+                if(!stock){
+                    stock = 0
+                }
+                let variantId = await LaptopVariant.countDocuments({product_id: productId})
+                variantId = productId + "V" + variantId.toString()
+                //Field info
+                
+                let partNumber = req.body.variantField.partNumber
+                if(!partNumber){
+                    res.status(400).json({
+                        message: "Part Number is required!"
+                    })
+                }
+                let mfgYear = req.body.variantField.mfgYear
+                if(!mfgYear){
+                    res.status(400).json({
+                        message: "MFG Year is required!"
+                    })
+                }
+                let originId = req.body.variantField.originId
+                if(!originId){
+                    res.status(400).json({
+                        message: "Origin ID is required!"
+                    })
+                }
+                let weight = req.body.variantField.weight
+                if(!weight){
+                    res.status(400).json({
+                        message: "Weight is required!"
+                    })
+                }
+                let colorId = req.body.variantField.colorId
+                if(!color){
+                    res.status(400).json({
+                        message: "Color ID is required!"
+                    })
+                }
+                let material = req.body.variantField.material
+                if(!material){
+                    res.status(400).json({
+                        message: "Material is required!"
+                    })
+                }
+                let maxRamUp = req.body.variantField.maxRamUp
+                if(!maxRamUp){
+                    maxRamUp = "Cannot Upgrade"
+                }
+                let maxDriveUp = req.body.variantField.maxDriveUp
+                if(!maxDriveUp){
+                    maxDriveUp = "Cannot Upgrade"
+                }
+                let whdSize = {
+                    width : req.body.variantField.whdSize.width,
+                    height: req.body.variantField.whdSize.height,
+                    depth: req.body.variantField.whdSize.depth
+                }
+                if(!whdSize.width || !whdSize.height || ! whdSize.depth){
+                    res.status(400).json({
+                        message: "Width, Height, Depth is all required!"
+                    })
+                }
+                let cpu = {
+                    brand: req.body.variantField.cpu.brand,
+                    name: req.body.variantField.cpu.name,
+                    model: req.body.variantField.cpu.model,
+                    minRate: req.body.variantField.cpu.minRate
+                }
+                if(!cpu.brand || !cpu.name || !cpu.model || !cpu.minRate){
+                    res.status(400).json({
+                        message: "CPU Brand, Name, Model, Min rate is all required!"
+                    })
+                }
+                let vga = {
+                    brand: req.body.variantField.vga.brand,
+                    name: req.body.variantField.vga.name,
+                    model: req.body.variantField.vga.model
+                }
+                if(!vga.brand || !vga.name || !vga.model){
+                    res.status(400).json({
+                        message: "VGA Brand, Name, Model is all required!"
+                    })
+                }
+                let ram = {
+                    type: req.body.variantField.ram.type,
+                    storage: req.body.variantField.ram.storage,
+                    slots: req.body.variantField.ram.slots
+                }
+                if(!ram.type || !cpu.storage || !ram.slots){
+                    res.status(400).json({
+                        message: "RAM Type, Storage, Slots is all required!"
+                    })
+                }
+                let drive = {
+                    type: req.body.variantField.drive.type,
+                    model: req.body.variantField.drive.model,
+                    storage: req.body.variantField.drive.storage,
+                    slots: req.body.variantField.drive.slots
+                }
+                if(!drive.type || !drive.model || !drive.storage || !drive.slots){
+                    res.status(400).json({
+                        message: "Drive Type, Model, Storage, Slots is all required!"
+                    })
+                }
+                let screen = {
+                    size: req.body.variantField.screen.size,
+                    type: req.body.variantField.screen.type,
+                    resolution: {
+                        width: req.body.variantField.screen.resolution.width,
+                        height: req.body.variantField.screen.resolution.height
+                    },
+                    refreshRate: req.body.variantField.screen.refreshRate,
+                    colorRate: req.body.variantField.screen.colorRate,
+                    ratio: req.body.variantField.screen.ratio
+                }
+                if(!screen.size || !screen.type || !screen.resolution.width || !screen.resolution.height || !screen.refreshRate || !screen.colorRate || !screen.ratio){
+                    res.status(400).json({
+                        message: "Screen Size, Type, Resolution, Refresh Rate, Color rate, Ratio is all required!"
+                    })
+                }
+                let port = {
+                    wifi: req.body.variantField.port.wifi,
+                    bluetooth: req.body.variantField.port.bluetooth,
+                    webcam: req.body.variantField.port.webcam,
+                    usb1: {
+                        type: req.body.variantField.port.usb1.type,
+                        slots: req.body.variantField.port.usb1.slots
+                    },
+                    usb2: {
+                        type: req.body.variantField.port.usb2.type,
+                        slots: req.body.variantField.port.usb2.slots
+                    },
+                    hdmi1: {
+                        version: req.body.variantField.port.hdmi1.version,
+                        slots: req.body.variantField.port.hdmi1.slots
+                    },
+                    hdmi2: {
+                        version: req.body.variantField.port.hdmi2.version,
+                        slots: req.body.variantField.port.hdmi2.slots
+                    },
+                    cardReaderSlots: req.body.variantField.port.cardReaderSlots,
+                    jack3p5mmSlots: req.body.variantField.port.jack3p5mmSlots
+                }
+                if(!port.wifi || !port.bluetooth || !port.usb1.type || !port.usb1.slots || !port.hdmi1.version || !port.hdmi1.slots){
+                    res.status(400).json({
+                        message: "Wifi, Bluetooth, USB Port, HDMI Port is all required!"
+                    })
+                }else{
+                    if(!port.webcam){
+                        port.webcam = "None"
+                    }
+                    if(!port.usb2.type || !port.usb2.slots){
+                        port.usb2 = null
+                    }
+                    if(!port.hdmi2.version || !port.hdmi2.slots){
+                        port.hdm2 = null
+                    }
+                    if(!port.cardReaderSlots){
+                        port.cardReaderSlots = 0
+                    }
+                    if(!port.jack3p5mmSlots){
+                        port.jack3p5mmSlots = 0
+                    }
+                }
+                let os = {
+                    name: req.body.variantField.os.name,
+                    version: req.body.variantField.os.version
+                }
+                if(!os.name || !os.version){
+                    res.status(400).json({
+                        message: "OS Name, Version is all required!"
+                    })
+                }
+                let keyboard = {
+                    type: req.body.variantField.keyboard.type,
+                    led: req.body.variantField.keyboard.led,
+                    hasNumpad: req.body.variantField.keyboard.hasNumpad,
+                    touchpad: req.body.variantField.keyboard.touchpad
+                }
+                if(!keyboard.type || !keyboard.hasNumpad || !keyboard.touchpad){
+                    res.status(400).json({
+                        message: "Keyboard Type, Has Numpad, Touchpad is all required!"
+                    })
+                }else{
+                    if(!keyboard.led){
+                        keyboard.led = "None"
+                    }
+                }
+                let power = {
+                    capability: req.body.variantField.power.capability,
+                    supply: req.body.variantField.power.supply
+                }
+                if(!power.capability || !power.supply){
+                    res.status(400).json({
+                        message: "Power capability, supply is all required!"
+                    })
+                }
+                let sku = "L" + originId + "Y" + mfgYear.toString() + "C" + colorId
+
+            }
+        }
+        
     } catch (error) {
         res.status(500).json({
             Error: `Error ${error.message}`

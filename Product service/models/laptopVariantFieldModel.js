@@ -61,7 +61,7 @@ const ramSchema = new mongoose.Schema({
         required: true 
     },
     storage: {
-        type: Number,
+        type: String,
         required: true
     },
     slots: {
@@ -80,7 +80,7 @@ const driveSchema = new mongoose.Schema({
         required: true
     },
     storage: {
-        type: Number,
+        type: String,
         required: true
     },
     slots: {
@@ -198,6 +198,11 @@ const laptopVariantFieldSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    variant_id: {
+        type: String,
+        required: true,
+        unique: true
+    },
     part_number: {
         type: String,
         required: true  
@@ -206,7 +211,7 @@ const laptopVariantFieldSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    origin: {
+    origin_id: {
         type: String,
         required: true
     },
@@ -214,7 +219,7 @@ const laptopVariantFieldSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    color: {
+    color_id: {
         type: String,
         required: true
     },
