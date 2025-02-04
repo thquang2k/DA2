@@ -321,6 +321,12 @@ const addLaptop = async (req, res, next) => {
                 message: "Cpu brand is required"
             })
         }
+        let vgaBrand = req.body.vgaBrand
+        if(!vgaBrand){
+            res.status(400).json({
+                message: "Vga brand is required"
+            })
+        }
         let size = req.body.size
         if(!size){
             res.status(400).json({
@@ -409,6 +415,12 @@ const addCellphone = async (req, res, next) => {
                 message: "Cpu brand is required"
             })
         }
+        let os = req.body.os
+        if(!os){
+            res.status(400).json({
+                message: "os is required"
+            })
+        }
         let size = req.body.size
         if(!size){
             res.status(400).json({
@@ -423,6 +435,41 @@ const addCellphone = async (req, res, next) => {
         }
         let productCount = Product.countDocuments()
         let productId = "CP" + brandId + (productCount + 1)
+        const cellphone = new Cellphone({
+                    product_id: productId,
+                    brand_id: brandId,
+                    product_name: productName,
+                    description: productDescription,
+                    cpu_brand: cpuBrand,
+                    os: os,
+                    size: size,
+                    feature_img_src: featureImgSrc
+                })
+
+        let save = await cellphone.save()
+        if(save){
+            const product = new Product({
+            product_id: productId,
+            category_id: "CP",
+            brand_id: brandId
+            })
+            let productSave = await product.save()
+            if(productSave){
+                res.status(200).json({
+                    message: `Cellphone added`,
+                    cellphone: cellphone,
+                    product: product
+                })
+            }else{
+                res.status(400).json({
+                message: "Product save failed!"
+                })
+            }
+        }else{
+            res.status(400).json({
+                message: "Cellphone save failed!"
+            })
+        }
     } catch (error) {
         res.status(500).json({
             message: `Error: ${error.message}`
@@ -464,13 +511,16 @@ const updateCellphoneById = async (req, res, next) => {
                 message: `Product ID is required!`
             })
         }else{
-            let product = await Laptop.findOne({product_id: productId})
-            if(!product){
+            let cellphone = await Cellphone.findOne({product_id: productId})
+            if(cellphone){
                 res.status(400).json({
                     message: `Cannot find laptop with ID ${productId}!`
                 })
             }else{
-                
+                let brandId = req.body.brandId
+                if(brandId){
+                    cellphone.brand_id
+                }
                 res.status(200).json({
                     message: `Get Laptop with Product ID ${productId} succeeded!`,
                     product: product
