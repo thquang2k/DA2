@@ -373,6 +373,8 @@ const addLaptop = async (req, res, next) => {
                     product: product
                 })
             }else{
+                //Rollback on laptop save
+                await Laptop.remove({product_id: productId})
                 res.status(400).json({
                 message: "Product save failed!"
                 })
@@ -492,16 +494,59 @@ const updateLaptopById = async (req, res, next) => {
                 message: `Product ID is required!`
             })
         }else{
-            let product = await Laptop.findOne({product_id: productId})
-            if(!product){
+            let laptop = await Laptop.findOne({product_id: productId})
+            if(laptop){
                 res.status(400).json({
                     message: `Cannot find laptop with ID ${productId}!`
                 })
             }else{
-
+                let oldLaptop = laptop
+                let brandId = req.body.brandId
+                if(brandId){
+                    laptop.brand_id = brandId
+                    let product = await Product.findOne({product_id: productId})
+                    product.brand_id = brandId
+                    let save = await product.save()
+                    if(!save){
+                        res.status(401).json({
+                            message: `Cannot update product brand`
+                        })
+                    }
+                }
+                let productName = req.body.productName
+                if(productName){
+                    laptop.product_name = productName
+                }
+                let description = req.body.description
+                if(description){
+                    laptop.description = description
+                }
+                let cpuBrand = req.body.cpuBrand
+                if(cpuBrand){
+                    laptop.cpu_brand = cpuBrand
+                }
+                let vgaBrand = req.body.vgaBrand
+                if(os){
+                    laptop.vga_brand = vgaBrand
+                }
+                let size = req.body.size
+                if(size){
+                    laptop.size = size
+                }
+                let featureImgSrc = req.body.featureImgSrc
+                if(featureImgSrc){
+                    laptop.feature_img_src = featureImgSrc
+                }
+                let save = await laptop.save()
+                if(!save){
+                    res.status(400).json({
+                        message: 'Update Laptop failed!'
+                    })
+                }
                 res.status(200).json({
-                    message: `Get Laptop with Product ID ${productId} succeeded!`,
-                    product: product
+                    message: `Update Laptop with Product ID ${productId} succeeded!`,
+                    before: oldLaptop,
+                    after: laptop
                 })
             }
         }
@@ -522,16 +567,56 @@ const updateCellphoneById = async (req, res, next) => {
             let cellphone = await Cellphone.findOne({product_id: productId})
             if(cellphone){
                 res.status(400).json({
-                    message: `Cannot find laptop with ID ${productId}!`
+                    message: `Cannot find cellphone with ID ${productId}!`
                 })
             }else{
+                let oldCellphone = cellphone
                 let brandId = req.body.brandId
                 if(brandId){
-                    cellphone.brand_id
+                    cellphone.brand_id = brandId
+                    let product = await Product.findOne({product_id: productId})
+                    product.brand_id = brandId
+                    let save = await product.save()
+                    if(!save){
+                        res.status(401).json({
+                            message: `Cannot update product brand`
+                        })
+                    }
+                }
+                let productName = req.body.productName
+                if(productName){
+                    cellphone.product_name = productName
+                }
+                let description = req.body.description
+                if(description){
+                    cellphone.description = description
+                }
+                let cpuBrand = req.body.cpuBrand
+                if(cpuBrand){
+                    cellphone.cpu_brand = cpuBrand
+                }
+                let os = req.body.os
+                if(os){
+                    cellphone.os = os
+                }
+                let size = req.body.size
+                if(size){
+                    cellphone.size = size
+                }
+                let featureImgSrc = req.body.featureImgSrc
+                if(featureImgSrc){
+                    cellphone.feature_img_src = featureImgSrc
+                }
+                let save = await cellphone.save()
+                if(!save){
+                    res.status(400).json({
+                        message: 'Update Cellphone failed!'
+                    })
                 }
                 res.status(200).json({
-                    message: `Get Laptop with Product ID ${productId} succeeded!`,
-                    product: product
+                    message: `Update Cellphone with Product ID ${productId} succeeded!`,
+                    before: oldCellphone,
+                    after: cellphone
                 })
             }
         }
