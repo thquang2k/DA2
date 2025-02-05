@@ -147,7 +147,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    origin: {
+    origin_id: {
         type: String,
         required: true
     },
@@ -155,7 +155,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    color: {
+    color_id: {
         type: String,
         required: true
     },
