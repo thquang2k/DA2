@@ -25,7 +25,10 @@ const init = require('./init')
 init.init()
 
 //route setup
+var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
+var brandRouter = require('./routes/brands');
+app.use('/brands', brandRouter);
 var productRouter = require('./routes/products');
 app.use('/products', productRouter);
 

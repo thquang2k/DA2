@@ -329,10 +329,28 @@ const updateCurrentUser = async (req, res, next) => {
                 message: "cannot save user"
             })
         }else{
+            let payload = {
+                userId: userData.user_id,
+                username: userData.user_name
+            }
+            let role = await Role.findOne({role_id: userData.role_id})
+            if(!role){
+                return res.status(400).json({
+                    success: false,
+                    message: `Cannot get role with ID ${userData.role_id}`
+                })
+            }else{
+                payload.role = role.role_name
+            }
+
+            let accessToken = await jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: "1h"
+            })
             return res.status(200).json({
                 success: true,
                 message: "updated user!",
-                USER: userData
+                user: userData,
+                token: accessToken
             })
         }
     } catch (error) {
