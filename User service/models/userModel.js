@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     role_id : {
         type: String,
-        default: ""
+        default: "10"
     }
 },
 {

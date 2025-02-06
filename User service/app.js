@@ -21,6 +21,8 @@ const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 const usersRouter = require('./routes/users');
 app.use('/users', usersRouter);
+const roleRouter = require('./routes/roles');
+app.use('/roles', roleRouter);
 const addressesRouter = require('./routes/addresses');
 app.use('/addresses', addressesRouter)
 

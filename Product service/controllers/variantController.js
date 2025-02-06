@@ -500,41 +500,90 @@ const createCellphoneVariant = async (req, res, next) => {
                     })
                 }
                 let cpu = {
-                    brand: req.body.variantField.cpu.brand,
+                    version: req.body.variantField.cpu.version,
                     name: req.body.variantField.cpu.name,
-                    model: req.body.variantField.cpu.model,
-                    minRate: req.body.variantField.cpu.minRate
+                    processorNum: req.body.variantField.cpu.processorNum,
+                    maxRate: req.body.variantField.cpu.maxRate
                 }
-                if(!cpu.brand || !cpu.name || !cpu.model || !cpu.minRate){
+                if(!cpu.version || !cpu.name || !cpu.processorNum || !cpu.maxRate){
                     res.status(400).json({
-                        message: "CPU Brand, Name, Model, Min rate is all required!"
+                        message: "CPU Version, Name, Number of processors, Max rate is all required!"
                     })
                 }
-                let vga = {
-                    brand: req.body.variantField.vga.brand,
-                    name: req.body.variantField.vga.name,
-                    model: req.body.variantField.vga.model
+                let connectors = {
+                    wifi: req.body.variantField.connectors.wifi,
+                    bluetooth: req.body.variantField.connectors.bluetooth,
+                    sim: [],
+                    internet: req.body.variantField.connectors.internet,
+                    chargerType: req.body.variantField.connectors.chargerType,
+                    hasJack3p5mm: req.body.variantField.connectors.hasJack3p5mm,
+                    gpsSupport: []
                 }
-                if(!vga.brand || !vga.name || !vga.model){
+                if(!req.body.variantField.connectors.sim || !connectors.chargerType){
                     res.status(400).json({
-                        message: "VGA Brand, Name, Model is all required!"
+                        message: "Connector SIM, Charger Type is all required!"
                     })
+                }else{
+                    if(!connectors.hasJack3p5mm){
+                        connectors.hasJack3p5mm = false;
+                    }
+                    if(!connectors.wifi){
+                        connectors.wifi = "Not available"
+                    }
+                    if(!connectors.bluetooth){
+                        connectors.bluetooth = "Not available"
+                    }
+                    if(!connectors.internet){
+                        connectors.internet = "Not supported"
+                    }
+                    if(req.body.variantField.connectors.sim){
+                        req.body.variantField.connectors.sim.forEach(sim => {
+                            connectors.gpsSupport.push(sim)
+                        });
+                    }
+                    if(!req.body.variantField.connectors.gpsSupport){
+                        connectors.gpsSupport = "Not supported"
+                    }else{
+                        req.body.variantField.connectors.gpsSupport.forEach(gps => {
+                            connectors.gpsSupport.push(gps)
+                        });
+                    }
                 }
-                let ram = {
-                    type: req.body.variantField.ram.type,
-                    storage: req.body.variantField.ram.storage,
-                    slots: req.body.variantField.ram.slots
+                let storage = {
+                    rom: req.body.variantField.storage.rom,
+                    driveSupport: req.body.variantField.storage.driveSupport,
+                    maxDriveSupport: req.body.variantField.storage.maxDriveSupport
                 }
-                if(!ram.type || !cpu.storage || !ram.slots){
+                if(!storage.rom){
                     res.status(400).json({
-                        message: "RAM Type, Storage, Slots is all required!"
+                        message: "Storage ROM is required!"
                     })
+                }else{
+                    if(!storage.driveSupport){
+                        storage.driveSupport = "Not support"
+                        storage.driveSupport.maxDriveSupport = 0
+                    }else{
+                        if(!storage.maxDriveSupport){
+                            res.status(400).json({
+                                message: "Storage Max drive support is required!"
+                            })
+                        }
+                    }
                 }
-                let drive = {
-                    type: req.body.variantField.drive.type,
-                    model: req.body.variantField.drive.model,
-                    storage: req.body.variantField.drive.storage,
-                    slots: req.body.variantField.drive.slots
+
+                let cameras = {
+                    backCamera: [],
+                    frontCamera: {
+                        type: req.body.variantField.cameras.frontCamera.type,
+                        resolution: req.body.variantField.cameras.frontCamera.resolution,
+                        videoResolution: req.body.cameras.frontCamera.videoResolution
+                    }
+                }
+                if(!req.body.variantField.cameras.backCamera){
+                    cameras.backCamera = "None"
+                }
+                if(!cameras.frontCamera.type || !cameras.frontCamera.resolution || !cameras.frontCamera.videoResolution){
+                    cameras.frontCamera = "None"
                 }
                 if(!drive.type || !drive.model || !drive.storage || !drive.slots){
                     res.status(400).json({
@@ -562,87 +611,21 @@ const createCellphoneVariant = async (req, res, next) => {
                         screen.touchRate = "Not available"
                     }
                 }
-                let port = {
-                    wifi: req.body.variantField.port.wifi,
-                    bluetooth: req.body.variantField.port.bluetooth,
-                    webcam: req.body.variantField.port.webcam,
-                    usb1: {
-                        type: req.body.variantField.port.usb1.type,
-                        slots: req.body.variantField.port.usb1.slots
-                    },
-                    usb2: {
-                        type: req.body.variantField.port.usb2.type,
-                        slots: req.body.variantField.port.usb2.slots
-                    },
-                    hdmi1: {
-                        version: req.body.variantField.port.hdmi1.version,
-                        slots: req.body.variantField.port.hdmi1.slots
-                    },
-                    hdmi2: {
-                        version: req.body.variantField.port.hdmi2.version,
-                        slots: req.body.variantField.port.hdmi2.slots
-                    },
-                    cardReaderSlots: req.body.variantField.port.cardReaderSlots,
-                    jack3p5mmSlots: req.body.variantField.port.jack3p5mmSlots
-                }
-                if(!port.wifi || !port.bluetooth || !port.usb1.type || !port.usb1.slots || !port.hdmi1.version || !port.hdmi1.slots){
-                    res.status(400).json({
-                        message: "Wifi, Bluetooth, USB Port, HDMI Port is all required!"
-                    })
-                }else{
-                    if(!port.webcam){
-                        port.webcam = "None"
-                    }
-                    if(!port.usb2.type || !port.usb2.slots){
-                        port.usb2 = null
-                    }
-                    if(!port.hdmi2.version || !port.hdmi2.slots){
-                        port.hdm2 = null
-                    }
-                    if(!port.cardReaderSlots){
-                        port.cardReaderSlots = 0
-                    }
-                    if(!port.jack3p5mmSlots){
-                        port.jack3p5mmSlots = 0
-                    }
-                }
-                let os = {
-                    name: req.body.variantField.os.name,
-                    version: req.body.variantField.os.version
-                }
-                if(!os.name || !os.version){
-                    res.status(400).json({
-                        message: "OS Name, Version is all required!"
-                    })
-                }
-                let keyboard = {
-                    type: req.body.variantField.keyboard.type,
-                    led: req.body.variantField.keyboard.led,
-                    hasNumpad: req.body.variantField.keyboard.hasNumpad,
-                    touchpad: req.body.variantField.keyboard.touchpad
-                }
-                if(!keyboard.type || !keyboard.hasNumpad || !keyboard.touchpad){
-                    res.status(400).json({
-                        message: "Keyboard Type, Has Numpad, Touchpad is all required!"
-                    })
-                }else{
-                    if(!keyboard.led){
-                        keyboard.led = "None"
-                    }
-                }
                 let power = {
+                    batteryType: req.body.variantField.power.batteryType,
                     capability: req.body.variantField.power.capability,
-                    supply: req.body.variantField.power.supply
+                    charger: req.body.variantField.power.charger
                 }
-                if(!power.capability || !power.supply){
+                if(!power.batteryType || !power.capability || !power.charger){
                     res.status(400).json({
-                        message: "Power capability, supply is all required!"
+                        message: "Power battery type, capility, charger is all required!"
                     })
                 }
-                let sku = "L" + originId + "Y" + mfgYear.toString() + "C" + colorId
+                
+                let sku = "C" + originId + "R" + storage.rom + "C" + colorId
                 let variantFieldId = variantId + "FIELD"
                 
-                let variant = new LaptopVariant({
+                let variant = new CellphoneVariant({
                     variant_id: variantId,
                     product_id: productId,
                     variant_name: variantName,
@@ -652,25 +635,24 @@ const createCellphoneVariant = async (req, res, next) => {
                     stock: stock
                 })
 
-                let variantField = new LaptopVariantField({
+                let variantField = new CellphoneVariantField({
                     variant_field_id: variantFieldId,
                     variant_id: variantId,
-                    part_number: partNumber,
                     mfg_year: mfgYear,
                     origin_id: originId,
                     weight: weight,
                     color_id: colorId,
+                    water_resist: waterResist,
                     material: material,
-                    max_ram_up: maxRamUp,
-                    max_drive_up: maxDriveUp,
+                    ram_storage: ramStorage,
+                    gpu: gpu,
                     whd_size: whdSize,
-                    cpu: cpu,
-                    vga: vga,
-                    ram: ram,
-                    drive: drive,
                     screen: screen,
-                    port: port,
-                    os: os,
+                    cpu: cpu,
+                    connectors: connectors,
+                    storage: storage,
+                    camera: cameras,
+                    screen: screen,
                     power: power,
                     gears: gears
                 })
@@ -678,18 +660,18 @@ const createCellphoneVariant = async (req, res, next) => {
                 let fieldSave = await variantField.save()
                 if(!fieldSave){
                     res.status(400).json({
-                        message: "Cannot save laptop variant field"
+                        message: "Cannot save cellphone variant field"
                     })
                 }else{
                     let variantSave = await variant.save()
                     if(!variantSave){
-                        await LaptopVariantField.findOneAndDelete({variant_field_id: variantFieldId})
+                        await CellphoneVariantField.findOneAndDelete({variant_field_id: variantFieldId})
                         res.status(400).json({
-                            message: "Cannot save laptop variant"
+                            message: "Cannot save cellphone variant"
                         })
                     }else{
                         res.status(200).json({
-                            message: "Save laptop variant succeeded",
+                            message: "Save cellphone variant succeeded",
                             variant: variant,
                             fields: variantField
                         })
@@ -710,5 +692,6 @@ module.exports = {
     getAllLaptopVariantsByProductId,
     getLaptopVariantById,
     getCellphoneVariantById,
-    createLaptopVariant
+    createLaptopVariant,
+    createCellphoneVariant
 }

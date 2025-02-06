@@ -93,13 +93,13 @@ const connectorsSchema = new mongoose.Schema({
 
 const storageSchema = new mongoose.Schema({
     rom: {
-        type: Number,
+        type: String,
         required: true
     },
     drive_support: {
         type: String
     },
-    max_drive_support_size: {
+    max_drive_support: {
         type: Number
     }
 })

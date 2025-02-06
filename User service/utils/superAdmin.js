@@ -9,6 +9,7 @@ const CreateSuperAdmin = async () => {
             admin = new User({
                 user_id: process.env.ADMIN_ID,
                 user_name: process.env.ADMIN_USERNAME,
+                full_name: "admin",
                 phone_num: "0",
                 email: process.env.ADMIN_EMAIL,
                 password: hashed_password = bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10, (error) => {

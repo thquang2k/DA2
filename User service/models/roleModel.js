@@ -11,3 +11,7 @@ const roleSchema = new mongoose.Schema({
         required: true
     }
 })
+
+const roleModel = mongoose.model('Role', roleSchema)
+
+module.exports = roleModel
