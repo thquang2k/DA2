@@ -25,7 +25,7 @@ const getAllAddress = async (req, res, next) => {
 const getAddressCurrentUser = async (req, res, next) => {
     try {
         let user = req.user
-        let addressList = await Address.find({user_id: user.user_id})
+        let addressList = await Address.find({user_id: user.userId})
         return res.status(200).json({
             success: true,
             message: `Address of current user`,
@@ -54,7 +54,7 @@ const getAddressByUserId = async (req, res, next) => {
                     message: `Cannot find user with ID ${userId}`
                 })
             }else{
-                let addressList = await Address.find({user_id: user.user_id})
+                let addressList = await Address.find({user_id: userId})
                 return res.status(200).json({
                     success: true,
                     message: `Address of user ID ${userId}`,

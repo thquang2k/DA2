@@ -1,18 +1,18 @@
-const Brand = require('../models/brandModel')
+const Color = require('../models/colorModel')
 
-const getAllBrand = async (req, res, next) => {
+const getAllColor = async (req, res, next) => {
     try {
-        let brands = await Brand.find()
-    if(!brands){
+        let colors = await Color.find()
+    if(!colors){
         return res.status(400).json({
             success: false,
-            message: "Cannot get all brands"
+            message: "Cannot get all colors"
         })
     }else{
         return res.status(200).json({
             success: true,
-            message: "Get all brands succeeded!",
-            brands: brands
+            message: "Get all colors succeeded!",
+            colors: colors
         })
     }
     } catch (error) {
@@ -22,26 +22,26 @@ const getAllBrand = async (req, res, next) => {
     }   
 }
 
-const getBrandById = async (req, res, next) => {
+const getColorById = async (req, res, next) => {
     try {
-        let brandId =req.params.brandId
-        if(!brandId){
+        let colorId =req.params.colorId
+        if(!colorId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Color ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(!brand){
+            let color = await Color.findOne({color_id: colorId})
+            if(!color){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand with ID ${brandId} is not exist`
+                    message: `Color with ID ${colorId} is not exist`
                 })
             }else{
                 return res.status(200).json({
                     success: true,
-                    message: `Get Brand with ID ${brandId} succeeded`,
-                    brand: brand
+                    message: `Get Color with ID ${colorId} succeeded`,
+                    color: color
                 })
             }
         }
@@ -52,46 +52,46 @@ const getBrandById = async (req, res, next) => {
     }
 }
 
-const createBrand = async (req, res, next) => {
+const createColor = async (req, res, next) => {
     try {
-        let brandId =req.body.brandId
-        if(!brandId){
+        let colorId =req.body.colorId
+        if(!colorId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Color ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(brand){
+            let color = await Color.findOne({color_id: colorId})
+            if(color){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand ID ${brandId} has been used`
+                    message: `Color ID ${colorId} has been used`
                 })
             }
         }
-        let brandName =req.body.brandName
-        if(!brandName){
+        let color =req.body.color
+        if(!color){
             return res.status(400).json({
                 success: false,
-                message: "Brand Name is required!"
+                message: "Color is required!"
             })
         }
-        let brand = new Brand({
-            brand_id: brandId,
-            brand_name: brandName
+        let colorData = new Color({
+            color_id: colorId,
+            color: color
         })
 
-        let save = await brand.save()
+        let save = await colorData.save()
         if(!save){
             return res.status(400).json({
                 success: false,
-                message: `Cannot save brand`
+                message: `Cannot save color`
             })
         }else{
             return res.status(200).json({
                 success: true,
-                message: `New brand created`,
-                brand: brand
+                message: `New color created`,
+                color: color
             })
         }
     } catch (error) {
@@ -101,37 +101,37 @@ const createBrand = async (req, res, next) => {
     }
 }
 
-const updateBrandById = async (req, res, next) => {
+const updateColorById = async (req, res, next) => {
     try {
-        let brandId =req.params.brandId
-        if(!brandId){
+        let colorId =req.params.colorId
+        if(!colorId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Color ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(!brand){
+            let colorData = await Color.findOne({color_id: colorId})
+            if(!colorData){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand ID ${brandId} is not exist`
+                    message: `Color ID ${colorId} is not exist`
                 })
             }
-            let brandName =req.body.brandName
-            if(brandName){
-                brand.brand_name = brandName
+            let color =req.body.color
+            if(color){
+                colorData.color = color
             }
-            let save = await brand.save()
+            let save = await colorData.save()
             if(!save){
                 return res.status(400).json({
                     success: false,
-                    message: `Cannot save brand`
+                    message: `Cannot save color`
                 })
             }else{
                 return res.status(200).json({
                     success: true,
-                    message: `Brand updated`,
-                    brand: brand
+                    message: `Color updated`,
+                    color: colorData
                 })
             }
         }
@@ -142,32 +142,32 @@ const updateBrandById = async (req, res, next) => {
     }
 }
 
-const deleteBrandById = async (req, res, next) => {
+const deleteColorById = async (req, res, next) => {
     try {
-        let brandId =req.params.brandId
-        if(!brandId){
+        let colorId =req.params.colorId
+        if(!colorId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Color ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(!brand){
+            let color = await Color.findOne({color_id: colorId})
+            if(!color){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand ID ${brandId} is not exist`
+                    message: `Color ID ${colorId} is not exist`
                 })
             }else{
-                let deleted = await Brand.findOneAndDelete({brand_id: brandId})
+                let deleted = await Color.findOneAndDelete({color_id: colorId})
                 if(!deleted){
                     return res.status(400).json({
                         success: false,
-                        message: `Cannot delete brand`
+                        message: `Cannot delete color`
                     })
                 }else{
                     return res.status(200).json({
                         success: true,
-                        message: `Brand deleted`
+                        message: `Color deleted`
                     })
                 }
             }
@@ -180,9 +180,9 @@ const deleteBrandById = async (req, res, next) => {
 }
 
 module.exports = {
-    getAllBrand,
-    getBrandById,
-    createBrand,
-    updateBrandById,
-    deleteBrandById
+    getAllColor,
+    getColorById,
+    createColor,
+    updateColorById,
+    deleteColorById
 }

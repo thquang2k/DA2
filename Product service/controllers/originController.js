@@ -1,18 +1,18 @@
-const Brand = require('../models/brandModel')
+const Origin = require('../models/originModel')
 
-const getAllBrand = async (req, res, next) => {
+const getAllOrigin = async (req, res, next) => {
     try {
-        let brands = await Brand.find()
-    if(!brands){
+        let origins = await Origin.find()
+    if(!origins){
         return res.status(400).json({
             success: false,
-            message: "Cannot get all brands"
+            message: "Cannot get all origins"
         })
     }else{
         return res.status(200).json({
             success: true,
-            message: "Get all brands succeeded!",
-            brands: brands
+            message: "Get all origins succeeded!",
+            origins: origins
         })
     }
     } catch (error) {
@@ -22,26 +22,26 @@ const getAllBrand = async (req, res, next) => {
     }   
 }
 
-const getBrandById = async (req, res, next) => {
+const getOriginById = async (req, res, next) => {
     try {
-        let brandId =req.params.brandId
-        if(!brandId){
+        let originId =req.params.originId
+        if(!originId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Origin ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(!brand){
+            let origin = await Origin.findOne({origin_id: originId})
+            if(!origin){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand with ID ${brandId} is not exist`
+                    message: `Origin with ID ${originId} is not exist`
                 })
             }else{
                 return res.status(200).json({
                     success: true,
-                    message: `Get Brand with ID ${brandId} succeeded`,
-                    brand: brand
+                    message: `Get Origin with ID ${originId} succeeded`,
+                    origin: origin
                 })
             }
         }
@@ -52,46 +52,46 @@ const getBrandById = async (req, res, next) => {
     }
 }
 
-const createBrand = async (req, res, next) => {
+const createOrigin = async (req, res, next) => {
     try {
-        let brandId =req.body.brandId
-        if(!brandId){
+        let originId =req.body.originId
+        if(!originId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Origin ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(brand){
+            let origin = await Origin.findOne({origin_id: originId})
+            if(origin){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand ID ${brandId} has been used`
+                    message: `Origin ID ${originId} has been used`
                 })
             }
         }
-        let brandName =req.body.brandName
-        if(!brandName){
+        let country =req.body.country
+        if(!country){
             return res.status(400).json({
                 success: false,
-                message: "Brand Name is required!"
+                message: "Country is required!"
             })
         }
-        let brand = new Brand({
-            brand_id: brandId,
-            brand_name: brandName
+        let origin = new Origin({
+            origin_id: originId,
+            country: country
         })
 
-        let save = await brand.save()
+        let save = await origin.save()
         if(!save){
             return res.status(400).json({
                 success: false,
-                message: `Cannot save brand`
+                message: `Cannot save origin`
             })
         }else{
             return res.status(200).json({
                 success: true,
-                message: `New brand created`,
-                brand: brand
+                message: `New origin created`,
+                origin: origin
             })
         }
     } catch (error) {
@@ -101,37 +101,37 @@ const createBrand = async (req, res, next) => {
     }
 }
 
-const updateBrandById = async (req, res, next) => {
+const updateOriginById = async (req, res, next) => {
     try {
-        let brandId =req.params.brandId
-        if(!brandId){
+        let originId =req.params.originId
+        if(!originId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Origin ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(!brand){
+            let origin = await Origin.findOne({origin_id: originId})
+            if(!origin){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand ID ${brandId} is not exist`
+                    message: `Origin ID ${originId} is not exist`
                 })
             }
-            let brandName =req.body.brandName
-            if(brandName){
-                brand.brand_name = brandName
+            let country =req.body.country
+            if(country){
+                origin.country = country
             }
-            let save = await brand.save()
+            let save = await origin.save()
             if(!save){
                 return res.status(400).json({
                     success: false,
-                    message: `Cannot save brand`
+                    message: `Cannot save origin`
                 })
             }else{
                 return res.status(200).json({
                     success: true,
-                    message: `Brand updated`,
-                    brand: brand
+                    message: `Origin updated`,
+                    origin: origin
                 })
             }
         }
@@ -142,32 +142,32 @@ const updateBrandById = async (req, res, next) => {
     }
 }
 
-const deleteBrandById = async (req, res, next) => {
+const deleteOriginById = async (req, res, next) => {
     try {
-        let brandId =req.params.brandId
-        if(!brandId){
+        let originId =req.params.originId
+        if(!originId){
             return res.status(400).json({
                 success: false,
-                message: "Brand ID is required!"
+                message: "Origin ID is required!"
             })
         }else{
-            let brand = await Brand.findOne({brand_id: brandId})
-            if(!brand){
+            let origin = await Origin.findOne({origin_id: originId})
+            if(!origin){
                 return res.status(400).json({
                     success: false,
-                    message: `Brand ID ${brandId} is not exist`
+                    message: `Origin ID ${originId} is not exist`
                 })
             }else{
-                let deleted = await Brand.findOneAndDelete({brand_id: brandId})
+                let deleted = await Origin.findOneAndDelete({origin_id: originId})
                 if(!deleted){
                     return res.status(400).json({
                         success: false,
-                        message: `Cannot delete brand`
+                        message: `Cannot delete origin`
                     })
                 }else{
                     return res.status(200).json({
                         success: true,
-                        message: `Brand deleted`
+                        message: `Origin deleted`
                     })
                 }
             }
@@ -180,9 +180,9 @@ const deleteBrandById = async (req, res, next) => {
 }
 
 module.exports = {
-    getAllBrand,
-    getBrandById,
-    createBrand,
-    updateBrandById,
-    deleteBrandById
+    getAllOrigin,
+    getOriginById,
+    createOrigin,
+    updateOriginById,
+    deleteOriginById
 }

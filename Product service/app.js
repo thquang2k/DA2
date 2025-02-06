@@ -29,6 +29,12 @@ var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 var brandRouter = require('./routes/brands');
 app.use('/brands', brandRouter);
+var categoryRouter = require('./routes/categories');
+app.use('/categories', categoryRouter);
+var colorRouter = require('./routes/colors');
+app.use('/colors', colorRouter);
+var originRouter = require('./routes/origins');
+app.use('/origins', originRouter);
 var productRouter = require('./routes/products');
 app.use('/products', productRouter);
 
