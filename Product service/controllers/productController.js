@@ -784,22 +784,26 @@ const removeProductById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product ID is required!"
             })
         }else{
             let product = await Product.findOne({product_id: productId})
             if(!product){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Product with ID ${productId} is not exist!`
                 })
             }else{
-                let remove
+                let remove, oldItem
                 switch (product.category_id) {
                     case "LT":
+                        oldItem = await Laptop.findOne({product_id: productId})
                         remove = await Laptop.findOneAndDelete({product_id: productId})
                         break;
                     case "CP":
+                        oldItem = await Cellphone.findOne({product_id: productId})
                         remove = await Cellphone.findOneAndDelete({product_id: productId})
                         break;
                     default:
@@ -811,23 +815,27 @@ const removeProductById = async (req, res, next) => {
                 if(remove){
                     let productRemove = await Product.findOneAndDelete({product_id: productId})
                     if(productRemove){
-                        res.status(200).json({
+                        return res.status(200).json({
+                            success: true,
                             message: `Product with ID ${productId} is removed!`
                         })
                     }else{
-                        res.status(400).json({
+                        await oldItem.save()
+                        return res.status(400).json({
+                            success: false,
                             message: `Product with ID ${productId} is failed to remove!`
                         })
                     }
                 }else{
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: `Product with ID ${productId} and Category ID ${product.category_id} is failed to remove!`
                     })
                 }
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
@@ -837,13 +845,15 @@ const removeLaptopById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product ID is required!"
             })
         }else{
             let laptop = await Laptop.findOne({product_id: productId})
             if(!laptop){
                 res.status(400).json({
+                    success: false,
                     message: `Laptop with ID ${productId} is not exist!`
                 })
             }else{
@@ -851,24 +861,27 @@ const removeLaptopById = async (req, res, next) => {
                 if(remove){
                     let productRemove = await Product.findOneAndDelete({product_id: productId})
                     if(productRemove){
-                        res.status(200).json({
-                            message: `Product with ID ${productId} is removed!`
+                        return res.status(200).json({
+                            success: true,
+                            message: `Laptop with ID ${productId} is removed!`
                         })
                     }else{
-                        let save = await laptop.save()
-                        res.status(400).json({
+                        await laptop.save()
+                        return res.status(400).json({
+                            success: false,
                             message: `Product with ID ${productId} is failed to remove!`
                         })
                     }
                 }else{
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: `Laptop with ID ${productId} is failed to remove!`
                     })
                 }
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
@@ -878,13 +891,15 @@ const removeCellphoneById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product ID is required!"
             })
         }else{
             let cellphone = await Cellphone.findOne({product_id: productId})
             if(!cellphone){
                 res.status(400).json({
+                    success: false,
                     message: `Cellphone with ID ${productId} is not exist!`
                 })
             }else{
@@ -892,24 +907,27 @@ const removeCellphoneById = async (req, res, next) => {
                 if(remove){
                     let productRemove = await Product.findOneAndDelete({product_id: productId})
                     if(productRemove){
-                        res.status(200).json({
-                            message: `Product with ID ${productId} is removed!`
+                        return res.status(200).json({
+                            success: true,
+                            message: `Cellphone with ID ${productId} is removed!`
                         })
                     }else{
-                        let save = await cellphone.save()
-                        res.status(400).json({
+                        await cellphone.save()
+                        return res.status(400).json({
+                            success: false,
                             message: `Product with ID ${productId} is failed to remove!`
                         })
                     }
                 }else{
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: `Cellphone with ID ${productId} is failed to remove!`
                     })
                 }
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
