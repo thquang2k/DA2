@@ -7,5 +7,8 @@ const variantController = require('../controllers/variantController')
 router.get('/', productController.getAllProduct)
 router.get('/laptop', productController.getAllLaptop)
 router.get('/cellphone', productController.getAllCellphone)
+router.post('/add', productController.addProduct)
+router.post('/laptop/add', productController.addLaptop)
+router.post('/cellphone/add', productController.addCellphone)
 
 module.exports = router;

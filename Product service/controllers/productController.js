@@ -194,177 +194,239 @@ const getCellphoneById = async (req, res, next) => {
 
 const addProduct = async (req, res, next) => {
     try {
+        //Check brand ID
         let brandId = req.body.brandId
         if(!brandId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "brand ID is required"
             })
         }else{
             let brand = await Brand.findOne({brand_id: brandId})
             if(!brand){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Brand with ID ${brandId} is not exist`
                 })
             }
         }
-
+        //Check category ID
         let categoryId = req.body.categoryId
         if(!categoryId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "category ID is required"
             })
         }else{
             let category = await Category.findOne({category_id: categoryId})
             if(!category){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Category with ID ${categoryId} is not exist`
                 })
             }
         }
-        let productCount = Product.countDocuments()
+
+        let productCount = await Product.countDocuments()
         let productId = categoryId + brandId + (productCount + 1)
-        let product = new Product({
+        let genericProduct = new Product({
             product_id: productId,
             category_id: categoryId,
             brand_id: brandId
         })
+
         let productName = req.body.productName
         if(!productName){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product name is required"
             })
         }
+        
         let productDescription = req.body.productDescription
         if(!productDescription){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product description is required"
             })
         }
+
         let cpuBrand = req.body.cpuBrand
         if(!cpuBrand){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Cpu brand is required"
             })
         }
-        let size = req.body.size
-        if(!size){
-            res.status(400).json({
+
+        let productSize = req.body.productSize
+        if(!productSize){
+            return res.status(400).json({
+                success: false,
                 message: "Product size is required"
             })
         }
+
         let featureImgSrc = req.body.featureImgSrc
         if(!featureImgSrc){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product feature img is required"
             })
         }
-        let save;
+
+        let save, product
         switch (categoryId) {
             case "LT":
                 let vgaBrand = req.body.vgaBrand
                 if(!vgaBrand){
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: "Vga brand is required"
                     })
                 }
-                let laptop = new Laptop({
+
+                product = new Laptop({
                     product_id: productId,
                     brand_id: brandId,
                     product_name: productName,
                     description: productDescription,
                     cpu_brand: cpuBrand,
                     vga_brand: vgaBrand,
-                    size: size,
+                    size: productSize,
                     feature_img_src: featureImgSrc
                 })
-                save = await laptop.save();
                 break;
             case "CP":
                 let os = req.body.os
                 if(!os){
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: "OS name is required"
                     })
                 }
-                let cellphone = new Cellphone({
+
+                product = new Cellphone({
                     product_id: productId,
                     brand_id: brandId,
                     product_name: productName,
                     description: productDescription,
                     cpu_brand: cpuBrand,
                     os: os,
-                    size: size,
+                    size: productSize,
                     feature_img_src: featureImgSrc
                 })
-                save = await cellphone.save()
                 break;
             default:
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Invalid category ID`
                 })
                 break;
         }
-        if(save){
-            await product.save()
+        save = await product.save();
+        if(!save){
+            return res.status(400).json({
+                success: false,
+                message: `Cannot save product with category ID ${categoryId}`
+            })
+        }else{
+            let productSave = await genericProduct.save()
+            if(!productSave){
+                switch (categoryId) {
+                    case "LT":
+                        await Laptop.findOneAndDelete({product_id: productId})
+                        break;
+                    case "CP":
+                        await Cellphone.findOneAndDelete({product_id: productId})
+                        break;
+                    default:
+                        break;
+                }
+                return res.status(400).json({
+                    success: false,
+                    message: `Cannot save generic product! Rollback saved item in ${categoryId}`
+                })
+            }else{
+                return res.status(200).json({
+                    success: true,
+                    message: "Add new product succeeded",
+                    generic_product: genericProduct,
+                    product: product
+                })
+            }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
 }
 const addLaptop = async (req, res, next) => {
     try {
+        //Check brand
         let brandId = req.body.brandId
         if(!brandId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "brand ID is required"
             })
         }else{
             let brand = await Brand.findOne({brand_id: brandId})
             if(!brand){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Brand with ID ${brandId} is not exist`
                 })
             }
         }
+        
         let productName = req.body.productName
         if(!productName){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product name is required"
             })
         }
+
         let productDescription = req.body.productDescription
         if(!productDescription){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product description is required"
             })
         }
+
         let cpuBrand = req.body.cpuBrand
         if(!cpuBrand){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Cpu brand is required"
             })
         }
+
         let vgaBrand = req.body.vgaBrand
         if(!vgaBrand){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Vga brand is required"
             })
         }
-        let size = req.body.size
-        if(!size){
-            res.status(400).json({
+        let productSize = req.body.productSize
+        if(!productSize){
+            return res.status(400).json({
+                success: false,
                 message: "Product size is required"
             })
         }
         let featureImgSrc = req.body.featureImgSrc
         if(!featureImgSrc){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product feature img is required"
             })
         }
-        let productCount = Product.countDocuments()
+        let productCount = await Product.countDocuments()
         let productId = "LT" + brandId + (productCount + 1)
         const laptop = new Laptop({
                     product_id: productId,
@@ -373,7 +435,7 @@ const addLaptop = async (req, res, next) => {
                     description: productDescription,
                     cpu_brand: cpuBrand,
                     vga_brand: vgaBrand,
-                    size: size,
+                    size: productSize,
                     feature_img_src: featureImgSrc
                 })
 
@@ -386,81 +448,94 @@ const addLaptop = async (req, res, next) => {
             })
             let productSave = await product.save()
             if(productSave){
-                res.status(200).json({
-                    message: `Laptop added`,
+                return res.status(200).json({
+                    success: true,
+                    message: `Add laptop succeeded`,
                     laptop: laptop,
                     product: product
                 })
             }else{
                 //Rollback on laptop save
-                await Laptop.remove({product_id: productId})
-                res.status(400).json({
-                message: "Product save failed!"
+                await Laptop.findOneAndDelete({product_id: productId})
+                return res.status(400).json({
+                    success: false,
+                    message: "Product save failed!"
                 })
             }
         }else{
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Laptop save failed!"
             })
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
 }
+
 const addCellphone = async (req, res, next) => {
     try {
+        //Check brand
         let brandId = req.body.brandId
         if(!brandId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "brand ID is required"
             })
         }else{
             let brand = await Brand.findOne({brand_id: brandId})
             if(!brand){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Brand with ID ${brandId} is not exist`
                 })
             }
         }
         let productName = req.body.productName
         if(!productName){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product name is required"
             })
         }
         let productDescription = req.body.productDescription
         if(!productDescription){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product description is required"
             })
         }
         let cpuBrand = req.body.cpuBrand
         if(!cpuBrand){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Cpu brand is required"
             })
         }
         let os = req.body.os
         if(!os){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "os is required"
             })
         }
-        let size = req.body.size
-        if(!size){
-            res.status(400).json({
+        let productSize = req.body.productSize
+        if(!productSize){
+            return res.status(400).json({
+                success: false,
                 message: "Product size is required"
             })
         }
         let featureImgSrc = req.body.featureImgSrc
         if(!featureImgSrc){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Product feature img is required"
             })
         }
-        let productCount = Product.countDocuments()
+        let productCount = await Product.countDocuments()
         let productId = "CP" + brandId + (productCount + 1)
         const cellphone = new Cellphone({
                     product_id: productId,
@@ -469,7 +544,7 @@ const addCellphone = async (req, res, next) => {
                     description: productDescription,
                     cpu_brand: cpuBrand,
                     os: os,
-                    size: size,
+                    size: productSize,
                     feature_img_src: featureImgSrc
                 })
 
@@ -482,25 +557,28 @@ const addCellphone = async (req, res, next) => {
             })
             let productSave = await product.save()
             if(productSave){
-                res.status(200).json({
+                return res.status(200).json({
+                    success: true,
                     message: `Cellphone added`,
                     cellphone: cellphone,
                     product: product
                 })
             }else{
                 //rollback cellphone added
-                await Cellphone.remove({product_id: productId})
-                res.status(400).json({
-                message: "Product save failed!"
+                await Cellphone.findOneAndDelete({product_id: productId})
+                return res.status(400).json({
+                    success: false,
+                    message: "Product save failed!"
                 })
             }
         }else{
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Cellphone save failed!"
             })
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
