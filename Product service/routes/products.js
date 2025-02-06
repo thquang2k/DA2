@@ -10,5 +10,7 @@ router.get('/cellphone', productController.getAllCellphone)
 router.post('/add', productController.addProduct)
 router.post('/laptop/add', productController.addLaptop)
 router.post('/cellphone/add', productController.addCellphone)
+router.put('/laptop/update/:productId', productController.updateLaptopById)
+router.put('/cellphone/update/:productId', productController.updateCellphoneById)
 
 module.exports = router;

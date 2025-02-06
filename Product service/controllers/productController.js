@@ -583,31 +583,37 @@ const addCellphone = async (req, res, next) => {
         })
     }
 }
+
 const updateLaptopById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: `Product ID is required!`
             })
         }else{
             let laptop = await Laptop.findOne({product_id: productId})
-            if(laptop){
-                res.status(400).json({
+            if(!laptop){
+                return res.status(400).json({
+                    success: false,
                     message: `Cannot find laptop with ID ${productId}!`
                 })
             }else{
-                let oldLaptop = laptop
+                let product, oldBrandId
                 let brandId = req.body.brandId
                 if(brandId){
-                    laptop.brand_id = brandId
-                    let product = await Product.findOne({product_id: productId})
-                    product.brand_id = brandId
-                    let save = await product.save()
-                    if(!save){
-                        res.status(401).json({
-                            message: `Cannot update product brand`
+                    let brand = await Brand.findOne({brand_id: brandId})
+                    if(!brand){
+                        return res.status(400).json({
+                            success: false,
+                            message: `Brand with ID ${brandId} is not exist!`
                         })
+                    }else{
+                        oldBrandId = laptop.brand_id
+                        laptop.brand_id = brandId
+                        product = await Product.findOne({product_id: productId})
+                        product.brand_id = brandId
                     }
                 }
                 let productName = req.body.productName
@@ -623,61 +629,89 @@ const updateLaptopById = async (req, res, next) => {
                     laptop.cpu_brand = cpuBrand
                 }
                 let vgaBrand = req.body.vgaBrand
-                if(os){
+                if(vgaBrand){
                     laptop.vga_brand = vgaBrand
                 }
-                let size = req.body.size
-                if(size){
-                    laptop.size = size
+                let productSize = req.body.productSize
+                if(productSize){
+                    laptop.size = productSize
                 }
                 let featureImgSrc = req.body.featureImgSrc
                 if(featureImgSrc){
                     laptop.feature_img_src = featureImgSrc
                 }
+
                 let save = await laptop.save()
                 if(!save){
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: 'Update Laptop failed!'
                     })
+                }else{
+                    if(product){
+                        let productSave = await product.save()
+                        if(!productSave){
+                            laptop.brand_id = oldBrandId
+                            await laptop.save()
+                            return res.status(400).json({
+                                success: false,
+                                message: "Generic product update save failed!"
+                            })
+                        }else{
+                            return res.status(200).json({
+                                success: true,
+                                message: `Update Laptop with Product ID ${productId} succeeded!`,
+                                laptop: laptop,
+                                product: product
+                            })
+                        }
+                    }
+                    return res.status(200).json({
+                        success: true,
+                        message: `Update Laptop with Product ID ${productId} succeeded!`,
+                        laptop: laptop
+                    })
                 }
-                res.status(200).json({
-                    message: `Update Laptop with Product ID ${productId} succeeded!`,
-                    before: oldLaptop,
-                    after: laptop
-                })
+                
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
 }
+
 const updateCellphoneById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: `Product ID is required!`
             })
         }else{
             let cellphone = await Cellphone.findOne({product_id: productId})
-            if(cellphone){
-                res.status(400).json({
+            if(!cellphone){
+                return res.status(400).json({
+                    success: false,
                     message: `Cannot find cellphone with ID ${productId}!`
                 })
             }else{
-                let oldCellphone = cellphone
+                let product, oldBrandId
                 let brandId = req.body.brandId
                 if(brandId){
-                    cellphone.brand_id = brandId
-                    let product = await Product.findOne({product_id: productId})
-                    product.brand_id = brandId
-                    let save = await product.save()
-                    if(!save){
-                        res.status(401).json({
-                            message: `Cannot update product brand`
+                    let brand = await Brand.findOne({brand_id: brandId})
+                    if(!brand){
+                        return res.status(400).json({
+                            success: false,
+                            message: `Brand with ID ${brandId} is not exist!`
                         })
+                    }else{
+                        oldBrandId = cellphone.brand_id
+                        cellphone.brand_id = brandId
+                        product = await Product.findOne({product_id: productId})
+                        product.brand_id = brandId
                     }
                 }
                 let productName = req.body.productName
@@ -692,33 +726,55 @@ const updateCellphoneById = async (req, res, next) => {
                 if(cpuBrand){
                     cellphone.cpu_brand = cpuBrand
                 }
-                let os = req.body.os
-                if(os){
-                    cellphone.os = os
+                let vgaBrand = req.body.vgaBrand
+                if(vgaBrand){
+                    cellphone.vga_brand = vgaBrand
                 }
-                let size = req.body.size
-                if(size){
-                    cellphone.size = size
+                let productSize = req.body.productSize
+                if(productSize){
+                    cellphone.size = productSize
                 }
                 let featureImgSrc = req.body.featureImgSrc
                 if(featureImgSrc){
                     cellphone.feature_img_src = featureImgSrc
                 }
+
                 let save = await cellphone.save()
                 if(!save){
-                    res.status(400).json({
+                    return res.status(400).json({
+                        success: false,
                         message: 'Update Cellphone failed!'
                     })
+                }else{
+                    if(product){
+                        let productSave = await product.save()
+                        if(!productSave){
+                            cellphone.brand_id = oldBrandId
+                            await cellphone.save()
+                            return res.status(400).json({
+                                success: false,
+                                message: "Generic product update save failed!"
+                            })
+                        }else{
+                            return res.status(200).json({
+                                success: true,
+                                message: `Update Cellphone with Product ID ${productId} succeeded!`,
+                                cellphone: cellphone,
+                                product: product
+                            })
+                        }
+                    }
+                    return res.status(200).json({
+                        success: true,
+                        message: `Update Cellphone with Product ID ${productId} succeeded!`,
+                        cellphone: cellphone
+                    })
                 }
-                res.status(200).json({
-                    message: `Update Cellphone with Product ID ${productId} succeeded!`,
-                    before: oldCellphone,
-                    after: cellphone
-                })
+                
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
