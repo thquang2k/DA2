@@ -517,6 +517,14 @@ const createLaptopVariant = async (req, res, next) => {
                 let sku = "L" + originId + "Y" + mfgYear.toString() + "C" + colorId
                 let variantFieldId = variantId + "FIELD"
                 
+                let checkSkuExist = await LaptopVariant.findOne({sku: sku})
+                if(checkSkuExist){
+                    return res.status(400).json({
+                        success: false,
+                        message: `SKU ${sku} has been used by other variant`
+                    })
+                }
+
                 let variant = new LaptopVariant({
                     variant_id: variantId,
                     product_id: productId,
@@ -908,6 +916,14 @@ const createCellphoneVariant = async (req, res, next) => {
                 let sku = "C" + originId + "R" + storage.rom + "C" + colorId
                 let variantFieldId = variantId + "FIELD"
                 
+                let checkSkuExist = await CellphoneVariant.findOne({sku: sku})
+                if(checkSkuExist){
+                    return res.status(400).json({
+                        success: false,
+                        message: `SKU ${sku} has been used by other variant`
+                    })
+                }
+
                 let variant = new CellphoneVariant({
                     variant_id: variantId,
                     product_id: productId,
