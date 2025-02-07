@@ -1037,163 +1037,149 @@ const updateLaptopVariantById = async (req, res, next) => {
                 if(req.body.variantField){
                     let variantField = await LaptopVariantField.findOne({variant_id: variantId})
                     let partNumber = req.body.variantField.partNumber
-                    if(!partNumber){
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field Part Number is required!"
-                        })
+                    if(partNumber){
+                        variantField.part_number = partNumber
                     }
-                    mfgYear = req.body.variantField.mfgYear
-                    if(!mfgYear){
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field MFG Year is required!"
-                        })
+                    let mfgYear = req.body.variantField.mfgYear
+                    if(mfgYear){
+                        variantField.mfg_year = mfgYear
                     }
-                    originId = req.body.variantField.originId
-                    if(!originId){
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field Origin ID is required!"
-                        })
-                    }else{
+
+                    let originId = req.body.variantField.originId
+                    if(originId){
                         let origin = await Origin.findOne({origin_id: originId})
                         if(!origin){
                             return res.status(400).json({
                                 success: false,
                                 message: `Origin with ID ${originId} is not exist`
                             })
+                        }else{
+                            variantField.origin_id = originId
                         }
+            
                     }
-                    weight = req.body.variantField.weight
-                    if(!weight){
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field Weight is required!"
-                        })
+                    let weight = req.body.variantField.weight
+                    if(weight){
+                        variant.weight = weight
                     }
-                    colorId = req.body.variantField.colorId
-                    if(!colorId){
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field Color ID is required!"
-                        })
-                    }else{
+                    let colorId = req.body.variantField.colorId
+                    if(colorId){
                         let color = await Color.findOne({color_id: colorId})
                         if(!color){
                             return res.status(400).json({
                                 success: false,
                                 message: `Color with ID ${colorId} is not exist`
                             })
+                        }else{
+                            variantField.color_id = colorId
                         }
+                        
                     }
-                    material = req.body.variantField.material
-                    if(!material){
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field Material is required!"
-                        })
+
+                    let material = req.body.variantField.material
+                    if(material){
+                        variantField.material = material
                     }
-                    maxRamUp = req.body.variantField.maxRamUp
-                    if(!maxRamUp){
-                        maxRamUp = "Cannot Upgrade"
+                    let maxRamUp = req.body.variantField.maxRamUp
+                    if(maxRamUp){
+                        variantField.max_ram_up = maxRamUp
                     }
-                    maxDriveUp = req.body.variantField.maxDriveUp
-                    if(!maxDriveUp){
-                        maxDriveUp = "Cannot Upgrade"
+                    let maxDriveUp = req.body.variantField.maxDriveUp
+                    if(maxDriveUp){
+                        variantField.max_drive_up = maxDriveUp
                     }
                     if(req.body.variantField.whdSize){
-                        whdSize = {
+                        let whdSize = {
                             width : req.body.variantField.whdSize.width,
                             height: req.body.variantField.whdSize.height,
                             depth: req.body.variantField.whdSize.depth
                         }
-                        if(!whdSize.width || !whdSize.height || ! whdSize.depth){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field whdsize Width, Height, Depth is all required!"
-                            })
+                        if(whdSize.width){
+                            variantField.whd_size.width = whdSize.width
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field whdsize required!"
-                        })
+                        if(whdSize.height){
+                            variantField.whd_size.height = whdSize.height
+                        }
+                        if(whdSize.depth){
+                            variantField.whd_size.depth = whdSize.depth
+                        }
                     }
+
                     if(req.body.variantField.cpu){
-                        cpu = {
+                        let cpu = {
                             brand: req.body.variantField.cpu.brand,
                             name: req.body.variantField.cpu.name,
                             model: req.body.variantField.cpu.model,
                             minRate: req.body.variantField.cpu.minRate
                         }
-                        if(!cpu.brand || !cpu.name || !cpu.model || !cpu.minRate){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field CPU Brand, Name, Model, Min rate is all required!"
-                            })
+                        if(cpu.brand){
+                            variant.cpu.brand = cpu.brand
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field cpu required!"
-                        })
+                        if(cpu.name){
+                            variant.cpu.name = cpu.name
+                        }
+                        if(cpu.model){
+                            variant.cpu.model = cpu.model
+                        }
+                        if(cpu.minRate){
+                            variant.cpu.min_rate = cpu.minRate
+                        }
                     }
+
                     if(req.body.variantField.vga){
-                        vga = {
+                        let vga = {
                             brand: req.body.variantField.vga.brand,
                             name: req.body.variantField.vga.name,
                             model: req.body.variantField.vga.model
                         }
-                        if(!vga.brand || !vga.name || !vga.model){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field VGA Brand, Name, Model is all required!"
-                            })
+                        if(vga.brand){
+                            variant.vga.brand = vga.brand
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field vga required!"
-                        })
+                        if(vga.name){
+                            variant.vga.name = vga.name
+                        }
+                        if(vga.model){
+                            variant.vga.model = vga.model
+                        }
                     }
+
                     if(req.body.variantField.ram){
-                        ram = {
+                        let ram = {
                             type: req.body.variantField.ram.type,
                             storage: req.body.variantField.ram.storage,
                             slots: req.body.variantField.ram.slots
                         }
-                        if(!ram.type || !ram.storage || !ram.slots){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field RAM Type, Storage, Slots is all required!"
-                            })
+                        if(ram.brand){
+                            variant.ram.type = ram.type
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field ram required!"
-                        })
+                        if(ram.storage){
+                            variant.ram.storage = ram.storage
+                        }
+                        if(ram.slots){
+                            variant.ram.slots = ram.slots
+                        }
                     }
                     if(req.body.variantField.drive){
-                        drive = {
+                        let drive = {
                             type: req.body.variantField.drive.type,
                             model: req.body.variantField.drive.model,
                             storage: req.body.variantField.drive.storage,
                             slots: req.body.variantField.drive.slots
                         }
-                        if(!drive.type || !drive.model || !drive.storage || !drive.slots){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field Drive Type, Model, Storage, Slots is all required!"
-                            })
+                        if(drive.type){
+                            variant.drive.type = drive.type
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field drive required!"
-                        })
+                        if(drive.name){
+                            variant.drive.model = drive.model
+                        }
+                        if(drive.storage){
+                            variant.drive.storage = drive.storage
+                        }
+                        if(drive.slots){
+                            variant.drive.slots = drive.slots
+                        }
                     }
+                    
                     if(req.body.variantField.screen){
                         if(req.body.variantField.screen.resolution){
                             screen = {
