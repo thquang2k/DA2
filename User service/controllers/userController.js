@@ -111,6 +111,7 @@ const createUser = async (req, res, next) => {
 
         let hashedPassword = bcrypt.hashSync(password, 10)
         let user = new User({
+            user_id: "test",
             user_name: username,
             full_name: fullname,
             phone_num: phoneNumber,
@@ -118,7 +119,10 @@ const createUser = async (req, res, next) => {
             password: hashedPassword,
             role_id: roleId
         })
-        user.user_id = user._id.$oid
+        console.log(user)
+        user.user_id = user._id.toString()
+        user.user_id.replace('new Object Id(', '')
+        user.user_id.replace(')', '')
         
         let save = await user.save()
         if(!save){
