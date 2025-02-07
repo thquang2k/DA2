@@ -35,6 +35,8 @@ var colorRouter = require('./routes/colors');
 app.use('/colors', colorRouter);
 var originRouter = require('./routes/origins');
 app.use('/origins', originRouter);
+var promtionRouter = require('./routes/promotions');
+app.use('/promotions', promtionRouter);
 var productRouter = require('./routes/products');
 app.use('/products', productRouter);
 
