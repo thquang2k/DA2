@@ -1,142 +1,5 @@
 const mongoose = require("mongoose")
 
-const whdSizeSchema = new mongoose.Schema({
-    width: {
-        type: Number,
-        required: true
-    },
-    height: {
-        type: Number,
-        required: true
-    },
-    depth: {
-        type: Number,
-        required: true
-    }
-})
-
-const screenSchema = new mongoose.Schema({
-    size: {
-        type: Number,
-        required: true
-    },
-    screen_type: {
-        type: String,
-        required: true
-    },
-    resolution: [{
-        width: Number,
-        height: Number
-    }],
-    refresh_rate: {
-        type: Number,
-        required: true
-    },
-    bright_rate: {
-        type: String,
-        required: true
-    },
-    touch_rate: {
-        type: String
-    },
-    material: {
-        type: String,
-        required: true
-    }
-})
-
-const cpuSchema = new mongoose.Schema({
-    version: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    processor_num: {
-        type: Number,
-        required: true
-    },
-    max_rate: {
-        type: Number,
-        required: true
-    }
-})
-
-const connectorsSchema = new mongoose.Schema({
-    wifi: {
-        type: String
-    },
-    bluetooth: {
-        type: String
-    },
-    sim: [{
-        sim_type: String,
-        slots: Number
-    }],
-    internet: {
-        type: String
-    },
-    charger_type: {
-        type: String,
-        required: true
-    },
-    has_jack3p5mm:{
-        type: Boolean,
-        required: true
-    },
-    gps_support: {
-        type: [String]
-    }
-})
-
-const storageSchema = new mongoose.Schema({
-    rom: {
-        type: String,
-        required: true
-    },
-    drive_support: {
-        type: String
-    },
-    max_drive_support: {
-        type: Number
-    }
-})
-
-const cameraSchema = new mongoose.Schema({
-    camera_type: {
-        type: String
-    },
-    resolution: {
-        type: Number
-    },
-    video_resolution:{
-        type: Number
-    }
-})
-
-const powerSchema = new mongoose.Schema({
-    battery_type: {
-        type: String,
-        required: true
-    },
-    capability: {
-        type: Number,
-        required: true
-    },
-    charger: {
-        type: String,
-        required: true
-    }
-})
-
-const gearSchema = new mongoose.Schema({
-    name: {
-        type: String
-    }
-})
-
 const cellphoneVariantFieldSchema = new mongoose.Schema({
     variant_field_id: {
         type: String,
@@ -174,40 +37,66 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         type: String
     },
     whd_size: {
-        type: whdSizeSchema,
-        required: true
+        width: Number,
+        height: Number,
+        depth: Number
     },
     screen: {
-        type: screenSchema,
-        required: true
+        size: Number,
+        screen_type: String,
+        resolution: {
+            width: Number,
+            height: Number
+        },
+        refresh_rate: Number,
+        bright_rate: String,
+        touch_rate: String,
+        material: String
     },
     cpu: {
-        type: cpuSchema,
-        required: true
+        version: String,
+        name: String,
+        processor_num: Number,
+        max_rate: String
     },
     connectors: {
-        type: connectorsSchema,
-        required: true
+        wifi: String,
+        bluetooth: String,
+        sim: {
+            sim_type: String,
+            slots: Number
+        },
+        internet: String,
+        charger_type: String,
+        has_jack3p5mm: Boolean,
+        gps_support: [String]
     },
     storage: {
-        type: storageSchema,
-        required: true
+        rom: Number,
+        drive_support: String,
+        max_drive_support: Number
     },
     camera: [{
-        back_camera: {
-            type: [cameraSchema]
-        },
+        back_camera: [{
+            camera_type: String,
+            resolution: String,
+            video_resolution: String
+        }],
         front_camera: {
-            type: cameraSchema
+            camera_type:String,
+            resolution: String,
+            video_resolution: String
         }
     }],
     power: {
-        type: powerSchema,
-        required: true
+        battery_type: String,
+        capability: Number,
+        charger: String
     },
-    gears: {
-        type: [gearSchema]
-    }
+    gears:[
+        {name: String}
+    ]
+    
 })
 
 const cellphoneVariantFieldModel = mongoose.model("Cellphone_Variant_Field", cellphoneVariantFieldSchema)

@@ -20,7 +20,7 @@ router.delete('/laptop/delete/:productId', productController.removeLaptopById)
 router.get('/cellphone', productController.getAllCellphone)
 router.get('/cellphone/detail/:productId', productController.getCellphoneById)
 router.get('/cellphone/detail/:productId/variant', variantController.getAllCellphoneVariantsByProductId)
-
+router.post('/cellphone/detail/:productId/variant/add', variantController.createCellphoneVariant)
 router.post('/cellphone/add', productController.addCellphone)
 router.put('/cellphone/update/:productId', productController.updateCellphoneById)
 router.delete('/cellphone/delete/:productId', productController.removeCellphoneById)
