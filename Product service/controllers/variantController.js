@@ -338,7 +338,7 @@ const createLaptopVariant = async (req, res, next) => {
                     }
                     if(req.body.variantField.ram){
                         ram = {
-                            type: req.body.variantField.ram.type,
+                            ram_type: req.body.variantField.ram.type,
                             storage: req.body.variantField.ram.storage,
                             slots: req.body.variantField.ram.slots
                         }
@@ -356,7 +356,7 @@ const createLaptopVariant = async (req, res, next) => {
                     }
                     if(req.body.variantField.drive){
                         drive = {
-                            type: req.body.variantField.drive.type,
+                            drive_type: req.body.variantField.drive.type,
                             model: req.body.variantField.drive.model,
                             storage: req.body.variantField.drive.storage,
                             slots: req.body.variantField.drive.slots
@@ -377,7 +377,7 @@ const createLaptopVariant = async (req, res, next) => {
                         if(req.body.variantField.screen.resolution){
                             screen = {
                                 size: req.body.variantField.screen.size,
-                                type: req.body.variantField.screen.type,
+                                screen_type: req.body.variantField.screen.type,
                                 resolution: {
                                     width: req.body.variantField.screen.resolution.width,
                                     height: req.body.variantField.screen.resolution.height
@@ -411,7 +411,7 @@ const createLaptopVariant = async (req, res, next) => {
                                 bluetooth: req.body.variantField.port.bluetooth,
                                 webcam: req.body.variantField.port.webcam,
                                 usb1: {
-                                    type: req.body.variantField.port.usb1.type,
+                                    usb_type: req.body.variantField.port.usb1.type,
                                     slots: req.body.variantField.port.usb1.slots
                                 },
                                 hdmi1: {
@@ -421,7 +421,7 @@ const createLaptopVariant = async (req, res, next) => {
                                 cardReaderSlots: req.body.variantField.port.cardReaderSlots,
                                 jack3p5mmSlots: req.body.variantField.port.jack3p5mmSlots
                             }
-                            if(!port.wifi || !port.bluetooth || !port.usb1.type || !port.usb1.slots || !port.hdmi1.version || !port.hdmi1.slots){
+                            if(!port.wifi || !port.bluetooth || !port.usb1.usb_type || !port.usb1.slots || !port.hdmi1.version || !port.hdmi1.slots){
                                 return res.status(400).json({
                                     success: false,
                                     message: "Variant field Wifi, Bluetooth, USB Port, HDMI Port is all required!"
@@ -431,7 +431,7 @@ const createLaptopVariant = async (req, res, next) => {
                                     port.webcam = "None"
                                 }
                                 if(req.body.variantField.port.usb2){
-                                    port.usb2.type = req.body.variantFieldport.usb2.type
+                                    port.usb2.usb_type = req.body.variantFieldport.usb2.type
                                     port.usb2.slots = req.body.variantField.port.usb2.slots
                                 }else{
                                     port.usb2 = "None"
@@ -480,12 +480,12 @@ const createLaptopVariant = async (req, res, next) => {
                     }
                     if(req.body.variantField.keyboard){
                         keyboard = {
-                            type: req.body.variantField.keyboard.type,
+                            keyboard_type: req.body.variantField.keyboard.type,
                             led: req.body.variantField.keyboard.led,
                             hasNumpad: req.body.variantField.keyboard.hasNumpad,
                             touchpad: req.body.variantField.keyboard.touchpad
                         }
-                        if(!keyboard.type || !(keyboard.hasNumpad == true || keyboard.hasNumpad == false) || !keyboard.touchpad){
+                        if(!keyboard.keyboard_type || !(keyboard.hasNumpad == true || keyboard.hasNumpad == false) || !keyboard.touchpad){
                             return res.status(400).json({
                                 success: false,
                                 message: "Variant field Keyboard Type, Has Numpad, Touchpad is all required!"
@@ -1076,7 +1076,7 @@ const updateLaptopVariantById = async (req, res, next) => {
                     }
                     let weight = req.body.variantField.weight
                     if(weight){
-                        variant.weight = weight
+                        variantField.weight = weight
                     }
                     let colorId = req.body.variantField.colorId
                     if(colorId){
@@ -1129,16 +1129,16 @@ const updateLaptopVariantById = async (req, res, next) => {
                             minRate: req.body.variantField.cpu.minRate
                         }
                         if(cpu.brand){
-                            variant.cpu.brand = cpu.brand
+                            variantField.cpu.brand = cpu.brand
                         }
                         if(cpu.name){
-                            variant.cpu.name = cpu.name
+                            variantField.cpu.name = cpu.name
                         }
                         if(cpu.model){
-                            variant.cpu.model = cpu.model
+                            variantField.cpu.model = cpu.model
                         }
                         if(cpu.minRate){
-                            variant.cpu.min_rate = cpu.minRate
+                            variantField.cpu.min_rate = cpu.minRate
                         }
                     }
 
@@ -1149,13 +1149,13 @@ const updateLaptopVariantById = async (req, res, next) => {
                             model: req.body.variantField.vga.model
                         }
                         if(vga.brand){
-                            variant.vga.brand = vga.brand
+                            variantField.vga.brand = vga.brand
                         }
                         if(vga.name){
-                            variant.vga.name = vga.name
+                            variantField.vga.name = vga.name
                         }
                         if(vga.model){
-                            variant.vga.model = vga.model
+                            variantField.vga.model = vga.model
                         }
                     }
 
@@ -1166,13 +1166,13 @@ const updateLaptopVariantById = async (req, res, next) => {
                             slots: req.body.variantField.ram.slots
                         }
                         if(ram.brand){
-                            variant.ram.type = ram.type
+                            variantField.ram.ram_type = ram.type
                         }
                         if(ram.storage){
-                            variant.ram.storage = ram.storage
+                            variantField.ram.storage = ram.storage
                         }
                         if(ram.slots){
-                            variant.ram.slots = ram.slots
+                            variantField.ram.slots = ram.slots
                         }
                     }
                     if(req.body.variantField.drive){
@@ -1183,123 +1183,111 @@ const updateLaptopVariantById = async (req, res, next) => {
                             slots: req.body.variantField.drive.slots
                         }
                         if(drive.type){
-                            variant.drive.type = drive.type
+                            variantField.drive.drive_type = drive.type
                         }
                         if(drive.name){
-                            variant.drive.model = drive.model
+                            variantField.drive.model = drive.model
                         }
                         if(drive.storage){
-                            variant.drive.storage = drive.storage
+                            variantField.drive.storage = drive.storage
                         }
                         if(drive.slots){
-                            variant.drive.slots = drive.slots
+                            variantField.drive.slots = drive.slots
                         }
                     }
                     
                     if(req.body.variantField.screen){
+                        let screen = {
+                            size: req.body.variantField.screen.size,
+                            type: req.body.variantField.screen.type,
+                            refreshRate: req.body.variantField.screen.refreshRate,
+                            colorRate: req.body.variantField.screen.colorRate,
+                            ratio: req.body.variantField.screen.ratio
+                        }
+                        
+                        if(screen.size){
+                            variantField.screen.size = drive.size
+                        }
+                        if(screen.type){
+                            variantField.screen.screen_type = screen.type
+                        }
+                        if(screen.refreshRate){
+                            variantField.screen.refresh_rate = screen.refreshRate
+                        }
+                        if(screen.colorRate){
+                            variantField.screen.color_rate = screen.colorRate
+                        }
+                        if(screen.ratio){
+                            variantField.screen.ratio = screen.ratio
+                        }
+
                         if(req.body.variantField.screen.resolution){
-                            screen = {
-                                size: req.body.variantField.screen.size,
-                                type: req.body.variantField.screen.type,
-                                resolution: {
-                                    width: req.body.variantField.screen.resolution.width,
-                                    height: req.body.variantField.screen.resolution.height
-                                },
-                                refreshRate: req.body.variantField.screen.refreshRate,
-                                colorRate: req.body.variantField.screen.colorRate,
-                                ratio: req.body.variantField.screen.ratio
+                            screen.resolution.width = req.body.variantField.screen.resolution.width,
+                            screen.resolution.height = req.body.variantField.screen.resolution.height
+                            if(screen.resolution.width){
+                                variantField.screen.resolution.width = screen.resolution.width
                             }
-                            if(!screen.size || !screen.type || !screen.resolution.width || !screen.resolution.height || !screen.refreshRate || !screen.colorRate || !screen.ratio){
-                                return res.status(400).json({
-                                    success: false,
-                                    message: "Screen Size, Type, Resolution (w,h), Refresh Rate, Color rate, Ratio is all required!"
-                                })
+                            if(screen.resolution.height){
+                                variantField.screen.resolution.height = screen.resolution.height
                             }
-                        }else{
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field screen resolution required!"
-                            })
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field screen required!"
-                        })
                     }
+                    
                     if(req.body.variantField.port){
-                        if(req.body.variantField.port.usb1 && req.body.variantField.port.hdmi1){
-                            port = {
-                                wifi: req.body.variantField.port.wifi,
-                                bluetooth: req.body.variantField.port.bluetooth,
-                                webcam: req.body.variantField.port.webcam,
-                                usb1: {
-                                    type: req.body.variantField.port.usb1.type,
-                                    slots: req.body.variantField.port.usb1.slots
-                                },
-                                hdmi1: {
-                                    version: req.body.variantField.port.hdmi1.version,
-                                    slots: req.body.variantField.port.hdmi1.slots
-                                },
-                                cardReaderSlots: req.body.variantField.port.cardReaderSlots,
-                                jack3p5mmSlots: req.body.variantField.port.jack3p5mmSlots
-                            }
-                            if(!port.wifi || !port.bluetooth || !port.usb1.type || !port.usb1.slots || !port.hdmi1.version || !port.hdmi1.slots){
-                                return res.status(400).json({
-                                    success: false,
-                                    message: "Variant field Wifi, Bluetooth, USB Port, HDMI Port is all required!"
-                                })
-                            }else{
-                                if(!port.webcam){
-                                    port.webcam = "None"
-                                }
-                                if(req.body.variantField.port.usb2){
-                                    port.usb2.type = req.body.variantFieldport.usb2.type
-                                    port.usb2.slots = req.body.variantField.port.usb2.slots
-                                }else{
-                                    port.usb2 = "None"
-                                }
-                                if(req.body.variantField.port.hdmi2){
-                                    port.hdmi2.version = req.body.variantFieldport.usb2.version
-                                    port.hdmi2.slots = req.body.variantField.port.usb2.slots
-                                }else{
-                                    port.hdmi2 = "None"
-                                }
-                                if(!port.cardReaderSlots){
-                                    port.cardReaderSlots = 0
-                                }
-                                if(!port.jack3p5mmSlots){
-                                    port.jack3p5mmSlots = 0
-                                }
-                            }
-                        }else{
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field port usb1, hdmi1 required!"
-                            })
+                        let port = {
+                            wifi: req.body.variantField.port.wifi,
+                            bluetooth: req.body.variantField.port.bluetooth,
+                            webcam: req.body.variantField.port.webcam,
+                            cardReaderSlots: req.body.variantField.port.cardReaderSlots,
+                            jack3p5mmSlots: req.body.variantField.port.jack3p5mmSlots
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field port required!"
-                        })
+                        if(port.wifi){
+                            variantField.port.wifi = port.wifi
+                        }
+                        if(port.bluetooth){
+                            variantField.port.bluetooth = port.bluetooth
+                        }
+                        if(port.webcam){
+                            variantField.port.webcam = port.webcam
+                        }
+                        if(port.cardReaderSlots){
+                            variantField.port.cardreader_slots = port.cardReaderSlots
+                        }
+                        if(port.jack3p5mmSlots){
+                            variantField.port.jack3p5mm_slots = port.jack3p5mmSlots
+                        }
+                        if(req.body.variantField.port.usb1){
+                            port.usb1.type =  req.body.variantField.port.usb1.type
+                            port.usb1.slots = req.body.variantField.port.usb1.slots
+                            if(port.usb1.type){
+                                variantField.port.usb_1.usb_type = port.usb1.type
+                            }
+                            if(port.usb1.slots){
+                                variantField.port.usb_1.slots = port.usb1.slots
+                            }
+                        }
+                        if(req.body.variantField.port.hdmi1){
+                                port.hdmi1.version = req.body.variantField.port.hdmi1.version,
+                                port.hdmi1.slots = req.body.variantField.port.hdmi1.slots
+                                if(port.hdmi1.version){
+                                    variantField.port.hdmi_1.version = port.hdmi1.version
+                                }
+                                if(port.hdmi1.slots){
+                                    variantField.port.hdmi_1.slots = port.hdmi1.slots
+                                }
+                        }  
                     }
                     if(req.body.variantField.os){
-                        os = {
+                        let os = {
                             name: req.body.variantField.os.name,
                             version: req.body.variantField.os.version
                         }
-                        if(!os.name || !os.version){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field OS Name, Version is all required!"
-                            })
+                        if(os.name){
+                            variantField.os.name = os.name
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field os required!"
-                        })
+                        if(os.version){
+                            variantField.os.version = os.version
+                        }
                     }
                     if(req.body.variantField.keyboard){
                         keyboard = {
@@ -1308,15 +1296,17 @@ const updateLaptopVariantById = async (req, res, next) => {
                             hasNumpad: req.body.variantField.keyboard.hasNumpad,
                             touchpad: req.body.variantField.keyboard.touchpad
                         }
-                        if(!keyboard.type || !(keyboard.hasNumpad == true || keyboard.hasNumpad == false) || !keyboard.touchpad){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Variant field Keyboard Type, Has Numpad, Touchpad is all required!"
-                            })
-                        }else{
-                            if(!keyboard.led){
-                                keyboard.led = "None"
-                            }
+                        if(keyboard.type){
+                            variantField.keyboard.keyboard_type = keyboard.type
+                        }
+                        if(os.version){
+                            variantField.os.version = os.version
+                        }
+                        if(os.name){
+                            variantField.os.name = os.name
+                        }
+                        if(os.version){
+                            variantField.os.version = os.version
                         }
                     }else{
                         return res.status(400).json({
