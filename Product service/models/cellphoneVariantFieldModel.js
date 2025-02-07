@@ -6,6 +6,11 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    variant_id: {
+        type: String,
+        required: true,
+        unique: true
+    },
     mfg_year: {
         type: Number,
         required: true
@@ -76,7 +81,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         drive_support: String,
         max_drive_support: Number
     },
-    camera: [{
+    camera: {
         back_camera: [{
             camera_type: String,
             resolution: String,
@@ -87,7 +92,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
             resolution: String,
             video_resolution: String
         }
-    }],
+    },
     power: {
         battery_type: String,
         capability: Number,

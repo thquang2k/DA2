@@ -1040,7 +1040,6 @@ const updateLaptopVariantById = async (req, res, next) => {
                             })
                         }else{
                             variant.promotion_id = promotionId
-                            variant.price = variant.price * promotion.promotion_rate
                         }
                     }
                     stock = req.body.variant.stock
@@ -1050,8 +1049,8 @@ const updateLaptopVariantById = async (req, res, next) => {
                 }
                 
                 //Field info
+                let variantField = await LaptopVariantField.findOne({variant_id: variantId})
                 if(req.body.variantField){
-                    let variantField = await LaptopVariantField.findOne({variant_id: variantId})
                     let partNumber = req.body.variantField.partNumber
                     if(partNumber){
                         variantField.part_number = partNumber
@@ -1206,7 +1205,7 @@ const updateLaptopVariantById = async (req, res, next) => {
                         }
                         
                         if(screen.size){
-                            variantField.screen.size = drive.size
+                            variantField.screen.size = screen.size
                         }
                         if(screen.type){
                             variantField.screen.screen_type = screen.type
@@ -1222,13 +1221,11 @@ const updateLaptopVariantById = async (req, res, next) => {
                         }
 
                         if(req.body.variantField.screen.resolution){
-                            screen.resolution.width = req.body.variantField.screen.resolution.width,
-                            screen.resolution.height = req.body.variantField.screen.resolution.height
-                            if(screen.resolution.width){
-                                variantField.screen.resolution.width = screen.resolution.width
+                            if(req.body.variantField.screen.resolution.width){
+                                variantField.screen.resolution.width = req.body.variantField.screen.resolution.width
                             }
-                            if(screen.resolution.height){
-                                variantField.screen.resolution.height = screen.resolution.height
+                            if(req.body.variantField.screen.resolution.height){
+                                variantField.screen.resolution.height = req.body.variantField.screen.resolution.height
                             }
                         }
                     }
@@ -1257,23 +1254,19 @@ const updateLaptopVariantById = async (req, res, next) => {
                             variantField.port.jack3p5mm_slots = port.jack3p5mmSlots
                         }
                         if(req.body.variantField.port.usb1){
-                            port.usb1.type =  req.body.variantField.port.usb1.type
-                            port.usb1.slots = req.body.variantField.port.usb1.slots
-                            if(port.usb1.type){
-                                variantField.port.usb_1.usb_type = port.usb1.type
+                            if(req.body.variantField.port.usb1.type){
+                                variantField.port.usb_1.usb_type = req.body.variantField.port.usb1.type
                             }
-                            if(port.usb1.slots){
-                                variantField.port.usb_1.slots = port.usb1.slots
+                            if(req.body.variantField.port.usb1.slots){
+                                variantField.port.usb_1.slots = req.body.variantField.port.usb1.slots
                             }
                         }
                         if(req.body.variantField.port.hdmi1){
-                                port.hdmi1.version = req.body.variantField.port.hdmi1.version,
-                                port.hdmi1.slots = req.body.variantField.port.hdmi1.slots
-                                if(port.hdmi1.version){
-                                    variantField.port.hdmi_1.version = port.hdmi1.version
+                                if(req.body.variantField.port.hdmi1.version){
+                                    variantField.port.hdmi_1.version = req.body.variantField.port.hdmi1.version
                                 }
-                                if(port.hdmi1.slots){
-                                    variantField.port.hdmi_1.slots = port.hdmi1.slots
+                                if(req.body.variantField.port.hdmi1.slots){
+                                    variantField.port.hdmi_1.slots = req.body.variantField.port.hdmi1.slots
                                 }
                         }  
                     }
@@ -1299,99 +1292,43 @@ const updateLaptopVariantById = async (req, res, next) => {
                         if(keyboard.type){
                             variantField.keyboard.keyboard_type = keyboard.type
                         }
-                        if(os.version){
-                            variantField.os.version = os.version
+                        if(keyboard.led){
+                            variantField.keyboard.led = keyboard.led
                         }
-                        if(os.name){
-                            variantField.os.name = os.name
+                        if(keyboard.hasNumpad == true || keyboard.hasNumpad == false){
+                            variantField.keyboard.has_numpad = keyboard.hasNumpad
                         }
-                        if(os.version){
-                            variantField.os.version = os.version
+                        if(keyboard.touchpad){
+                            variantField.keyboard.touchpad = keyboard.touchpad
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field keyboard required!"
-                        })
                     }
                     if(req.body.variantField.power){
                         power = {
                             capability: req.body.variantField.power.capability,
                             supply: req.body.variantField.power.supply
                         }
-                        if(!power.capability || !power.supply){
-                            return res.status(400).json({
-                                success: false,
-                                message: "Power capability, supply is all required!"
-                            })
+                        if(power.capability){
+                            variantField.power.capability = power.capability
                         }
-                    }else{
-                        return res.status(400).json({
-                            success: false,
-                            message: "Variant field power required!"
-                        }) 
+                        if(power.supply){
+                            variantField.power.supply = power.supply
+                        }
                     }
                     if(req.body.variantField.gears){
+                        variantField.gears = []
                         req.body.variantField.gears.forEach(gear => {
-                            gears.push(gear)
+                            variantField.gears.push(gear)
                         });
                     }
-                }else{
-                    return res.status(400).json({
-                        success: false,
-                        message: "variantField is required in body!"
-                    })
                 }
                 
-                let sku = "L" + originId + "Y" + mfgYear.toString() + "C" + colorId
-                let variantFieldId = variantId + "FIELD"
-                
-                let checkSkuExist = await LaptopVariant.findOne({sku: sku})
-                if(checkSkuExist){
-                    return res.status(400).json({
-                        success: false,
-                        message: `SKU ${sku} has been used by other variant`
-                    })
-                }
-
-                let variant = new LaptopVariant({
-                    variant_id: variantId,
-                    product_id: productId,
-                    variant_name: variantName,
-                    sku: sku,
-                    price: price,
-                    promotion_id: promotionId,
-                    stock: stock
-                })
-
-                let variantField = new LaptopVariantField({
-                    variant_field_id: variantFieldId,
-                    variant_id: variantId,
-                    part_number: partNumber,
-                    mfg_year: mfgYear,
-                    origin_id: originId,
-                    weight: weight,
-                    color_id: colorId,
-                    material: material,
-                    max_ram_up: maxRamUp,
-                    max_drive_up: maxDriveUp,
-                    whd_size: whdSize,
-                    cpu: cpu,
-                    vga: vga,
-                    ram: ram,
-                    drive: drive,
-                    screen: screen,
-                    port: port,
-                    os: os,
-                    power: power,
-                    gears: gears
-                })
-
+                let sku = "L" + variantField.origin_id + "Y" + variantField.mfg_year.toString() + "C" + variantField.color_id
+                variant.sku = sku
                 let fieldSave = await variantField.save()
                 if(!fieldSave){
                     return res.status(400).json({
                         success: false,
-                        message: "Cannot save laptop variant field"
+                        message: "Cannot update laptop variant field"
                     })
                 }else{
                     let variantSave = await variant.save()
@@ -1399,12 +1336,335 @@ const updateLaptopVariantById = async (req, res, next) => {
                         await LaptopVariantField.findOneAndDelete({variant_field_id: variantFieldId})
                         return res.status(400).json({
                             success: false,
-                            message: "Cannot save laptop variant"
+                            message: "Cannot update laptop variant"
                         })
                     }else{
                         return res.status(200).json({
                             success: true,
-                            message: "Save laptop variant succeeded",
+                            message: "update laptop variant succeeded",
+                            variant: variant,
+                            fields: variantField
+                        })
+                    }
+                }
+            }
+        }
+        
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
+
+const updateCellphoneVariantById = async (req, res, next) => {
+    try {
+        let variantId = req.params.variantId
+        if(!variantId){
+            return res.status(400).json({
+                success: false,
+                message: "Variant ID is required!"
+            })
+        }else{
+            let variant = await CellphoneVariant.findOne({variant_id: variantId})
+            if(!variant){
+                return res.status(400).json({
+                    success: false,
+                    message: `Variant with ID ${variantId} is not exist!`
+                })
+            }else{
+                if(req.body.variant){
+                    let variantName = req.body.variant.name
+                    if(variantName){
+                        variant.variant_name = variantName
+                    }
+                    let price = req.body.variant.price
+                    if(price){
+                        variant.price = price
+                    }
+                    promotionId = req.body.variant.promotionId
+                    if(promotionId){
+                        let promotion = await Promotion.findOne({promotion_id: promotionId})
+                        if(!promotion){
+                            return res.status(400).json({
+                                success: false,
+                                message: `Promotion with ID ${promotionId} is not exist`
+                            })
+                        }else{
+                            variant.promotion_id = promotionId
+                        }
+                    }
+                    stock = req.body.variant.stock
+                    if(stock && stock > 0){
+                        variant.stock += stock
+                    }
+                }
+                
+                //Field info
+                let variantField = await CellphoneVariantField.findOne({variant_id: variantId})
+                console.log(variantField)
+                if(req.body.variantField){
+                    let mfgYear = req.body.variantField.mfgYear
+                    if(mfgYear){
+                        variantField.mfg_year = mfgYear
+                    }
+
+                    let originId = req.body.variantField.originId
+                    if(originId){
+                        let origin = await Origin.findOne({origin_id: originId})
+                        if(!origin){
+                            return res.status(400).json({
+                                success: false,
+                                message: `Origin with ID ${originId} is not exist`
+                            })
+                        }else{
+                            variantField.origin_id = originId
+                        }
+            
+                    }
+                    let weight = req.body.variantField.weight
+                    if(weight){
+                        variantField.weight = weight
+                    }
+                    let colorId = req.body.variantField.colorId
+                    if(colorId){
+                        let color = await Color.findOne({color_id: colorId})
+                        if(!color){
+                            return res.status(400).json({
+                                success: false,
+                                message: `Color with ID ${colorId} is not exist`
+                            })
+                        }else{
+                            variantField.color_id = colorId
+                        }
+                        
+                    }
+                    let waterResist = req.body.variantField.waterResist
+                    if(waterResist){
+                        variantField.water_resist = waterResist
+                    }
+                    let material = req.body.variantField.material
+                    if(material){
+                        variantField.material = material
+                    }
+                    let ramStorage = req.body.variantField.ramStorage
+                    if(ramStorage){
+                        variantField.ram_storage = ramStorage
+                    }
+                    let gpu = req.body.variantField.gpu
+                    if(gpu){
+                        variantField.gpu = gpu
+                    }
+                    if(req.body.variantField.whdSize){
+                        let whdSize = {
+                            width : req.body.variantField.whdSize.width,
+                            height: req.body.variantField.whdSize.height,
+                            depth: req.body.variantField.whdSize.depth
+                        }
+                        if(whdSize.width){
+                            variantField.whd_size.width = whdSize.width
+                        }
+                        if(whdSize.height){
+                            variantField.whd_size.height = whdSize.height
+                        }
+                        if(whdSize.depth){
+                            variantField.whd_size.depth = whdSize.depth
+                        }
+                    }
+
+                    if(req.body.variantField.screen){
+                        let screen = {
+                            size: req.body.variantField.screen.size,
+                            type: req.body.variantField.screen.type,
+                            refreshRate: req.body.variantField.screen.refreshRate,
+                            brightRate: req.body.variantField.screen.brightRate,
+                            touchRate: req.body.variantField.screen.touchRate,
+                            material: req.body.variantField.screen.material
+                        }
+                        
+                        if(screen.size){
+                            variantField.screen.size = screen.size
+                        }
+                        if(screen.type){
+                            variantField.screen.screen_type = screen.type
+                        }
+                        if(screen.refreshRate){
+                            variantField.screen.refresh_rate = screen.refreshRate
+                        }
+                        if(screen.brightRate){
+                            variantField.screen.bright_rate = screen.brightRate
+                        }
+                        if(screen.touchRate){
+                            variantField.screen.touch_rate = screen.touchRate
+                        }
+                        if(screen.material){
+                            variantField.screen.material = screen.material
+                        }
+
+                        if(req.body.variantField.screen.resolution){
+                            if(req.body.variantField.screen.resolution.width){
+                                variantField.screen.resolution.width = req.body.variantField.screen.resolution.width
+                            }
+                            if(req.body.variantField.screen.resolution.height){
+                                variantField.screen.resolution.height = req.body.variantField.screen.resolution.height
+                            }
+                        }
+                    }
+
+                    if(req.body.variantField.cpu){
+                        let cpu = {
+                            version: req.body.variantField.cpu.version,
+                            name: req.body.variantField.cpu.name,
+                            processorNum: req.body.variantField.cpu.processorNum,
+                            maxRate: req.body.variantField.cpu.maxRate
+                        }
+                        if(cpu.version){
+                            variantField.cpu.version = cpu.version
+                        }
+                        if(cpu.name){
+                            variantField.cpu.name = cpu.name
+                        }
+                        if(cpu.processorNum){
+                            variantField.cpu.processor_num = cpu.processorNum
+                        }
+                        if(cpu.maxRate){
+                            variantField.cpu.max_rate = cpu.maxRate
+                        }
+                    }
+
+                    if(req.body.variantField.vga){
+                        let vga = {
+                            brand: req.body.variantField.vga.brand,
+                            name: req.body.variantField.vga.name,
+                            model: req.body.variantField.vga.model
+                        }
+                        if(vga.brand){
+                            variantField.vga.brand = vga.brand
+                        }
+                        if(vga.name){
+                            variantField.vga.name = vga.name
+                        }
+                        if(vga.model){
+                            variantField.vga.model = vga.model
+                        }
+                    }
+
+                    if(req.body.variantField.connectors){
+                        let connectors = {
+                            wifi: req.body.variantField.connectors.wifi,
+                            bluetooth: req.body.variantField.connectors.bluetooth,
+                            internet: req.body.variantField.connectors.internet,
+                            chargerType: req.body.variantField.connectors.chargerType,
+                            hasJack3p5mm: req.body.variantField.connectors.hasJack3p5mm
+                        }
+                        if(connectors.wifi){
+                            variantField.connectors.wifi = connectors.wifi
+                        }
+                        if(connectors.bluetooth){
+                            variantField.connectors.bluetooth = connectors.bluetooth
+                        }
+                        if(connectors.internet){
+                            variantField.connectors.internet = connectors.internet
+                        }
+                        if(connectors.chargerType){
+                            variantField.connectors.charger_type = connectors.chargerType
+                        }
+                        if(connectors.hasJack3p5mm == true || connectors.hasJack3p5mm == false){
+                            variantField.connectors.has_jack3p5mm = connectors.hasJack3p5mm
+                        }
+                        if(req.body.variantField.connectors.sim){
+                            if(req.body.variantField.connectors.sim.type){
+                                variantField.connectors.sim.sim_type = req.body.variantField.connectors.sim.type
+                            }
+                            if(req.body.variantField.connectors.sim.slots){
+                                variantField.connectors.sim.slots = req.body.variantField.connectors.sim.slots
+                            }
+                        }
+                        if(req.body.variantField.connectors.gpsSupport){
+                            variantField.connectors.gps_support = []
+                            req.body.variantField.connectors.gpsSupport.forEach(gps => {
+                                variantField.connectors.gps_support.push(gps)
+                            });
+                        }
+                    }
+                    if(req.body.variantField.storage){
+                        let storage = {
+                            rom: req.body.variantField.storage.rom,
+                            driveSupport: req.body.variantField.storage.driveSupport,
+                            maxDriveSupport: req.body.variantField.storage.maxDriveSupport,
+                        }
+                        if(storage.rom){
+                            variantField.storage.rom = storage.rom
+                        }
+                        if(storage.driveSupport){
+                            variantField.storage.drive_support = storage.driveSupport
+                        }
+                        if(storage.maxDriveSupport){
+                            variantField.storage.max_drive_support = storage.maxDriveSupport
+                        }
+                    }
+                    
+                    if(req.body.variantField.camera){
+                       if(req.body.variantField.camera.backCamera){
+                            variantField.camera.back_camera = []
+                            req.body.variantField.camera.backCamera.forEach(camera => {
+                                variantField.camera.back_camera.push({
+                                    camera_type: camera.type,
+                                    resolution: camera.resolution,
+                                    video_resolution: camera.videoResolution
+                                })
+                            });
+                       }
+                       if(req.body.variantField.camera.frontCamera){
+                            variantField.camera.front_camera.camera_type = req.body.variantField.camera.frontCamera.type
+                            variantField.camera.front_camera.resolution = req.body.variantField.camera.frontCamera.resolution
+                            variantField.camera.front_camera.video_resolution = req.body.variantField.camera.frontCamera.videoResolution
+                        }
+                    }
+                    
+                    if(req.body.variantField.power){
+                        power = {
+                            batteryType: req.body.variantField.power.batteryType,
+                            capability: req.body.variantField.power.capability,
+                            charger: req.body.variantField.power.charger
+                        }
+                        if(power.batteryType){
+                            variantField.power.battery_type = power.batteryType
+                        }
+                        if(power.capability){
+                            variantField.power.supply = power.capability
+                        }
+                        if(power.charger){
+                            variantField.power.charger = power.charger
+                        }
+                    }
+                    if(req.body.variantField.gears){
+                        variantField.gears = []
+                        req.body.variantField.gears.forEach(gear => {
+                            variantField.gears.push(gear)
+                        });
+                    }
+                }
+                let sku = "L" + variantField.origin_id + "Y" + variantField.mfg_year.toString() + "C" + variantField.color_id
+                variant.sku = sku
+                let fieldSave = await variantField.save()
+                if(!fieldSave){
+                    return res.status(400).json({
+                        success: false,
+                        message: "Cannot update cellphone variant field"
+                    })
+                }else{
+                    let variantSave = await variant.save()
+                    if(!variantSave){
+                        await CellphoneVariantField.findOneAndDelete({variant_field_id: variantFieldId})
+                        return res.status(400).json({
+                            success: false,
+                            message: "Cannot update cellphone variant"
+                        })
+                    }else{
+                        return res.status(200).json({
+                            success: true,
+                            message: "update laptop cellphone succeeded",
                             variant: variant,
                             fields: variantField
                         })
@@ -1426,5 +1686,7 @@ module.exports = {
     getLaptopVariantById,
     getCellphoneVariantById,
     createLaptopVariant,
-    createCellphoneVariant
+    createCellphoneVariant,
+    updateLaptopVariantById,
+    updateCellphoneVariantById
 }
