@@ -61,6 +61,7 @@ const laptopVariantFieldSchema = new mongoose.Schema({
         ram_type: String,
         storage: String,
         slots: Number,
+    },
     drive: {
         drive_type: String,
         model: String,
@@ -117,7 +118,6 @@ const laptopVariantFieldSchema = new mongoose.Schema({
         supply: String
     },
     gears: [{name: String}]
-    }
 })
 
 const laptopVariantFieldModel = mongoose.model("Laptop_Variant_Field", laptopVariantFieldSchema)
