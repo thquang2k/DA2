@@ -199,7 +199,7 @@ const createLaptopVariant = async (req, res, next) => {
                 //Field info
                 let partNumber, mfgYear, originId, weight, colorId, material, maxRamUp, maxDriveUp, whdSize, cpu, vga, ram, drive, screen, port, os, keyboard, power, gears
                 if(req.body.variantField){
-                    partNumber = req.body.variantField.partNumber, maxRamUp
+                    partNumber = req.body.variantField.partNumber
                     if(!partNumber){
                         return res.status(400).json({
                             success: false,
@@ -974,6 +974,445 @@ const createCellphoneVariant = async (req, res, next) => {
                         return res.status(200).json({
                             success: true,
                             message: "Save cellphone variant succeeded",
+                            variant: variant,
+                            fields: variantField
+                        })
+                    }
+                }
+            }
+        }
+        
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
+
+const updateLaptopVariantById = async (req, res, next) => {
+    try {
+        let variantId = req.params.variantId
+        if(!variantId){
+            return res.status(400).json({
+                success: false,
+                message: "Variant ID is required!"
+            })
+        }else{
+            let variant = await LaptopVariant.findOne({variant_id: variantId})
+            if(!variant){
+                return res.status(400).json({
+                    success: false,
+                    message: `Variant with ID ${variantId} is not exist!`
+                })
+            }else{
+                if(req.body.variant){
+                    let variantName = req.body.variant.name
+                    if(variantName){
+                        variant.variant_name = variantName
+                    }
+                    let price = req.body.variant.price
+                    if(price){
+                        variant.price = price
+                    }
+                    promotionId = req.body.variant.promotionId
+                    if(promotionId){
+                        let promotion = await Promotion.findOne({promotion_id: promotionId})
+                        if(!promotion){
+                            return res.status(400).json({
+                                success: false,
+                                message: `Promotion with ID ${promotionId} is not exist`
+                            })
+                        }else{
+                            variant.promotion_id = promotionId
+                            variant.price = variant.price * promotion.promotion_rate
+                        }
+                    }
+                    stock = req.body.variant.stock
+                    if(stock && stock > 0){
+                        variant.stock += stock
+                    }
+                }
+                
+                //Field info
+                if(req.body.variantField){
+                    let variantField = await LaptopVariantField.findOne({variant_id: variantId})
+                    let partNumber = req.body.variantField.partNumber
+                    if(!partNumber){
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field Part Number is required!"
+                        })
+                    }
+                    mfgYear = req.body.variantField.mfgYear
+                    if(!mfgYear){
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field MFG Year is required!"
+                        })
+                    }
+                    originId = req.body.variantField.originId
+                    if(!originId){
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field Origin ID is required!"
+                        })
+                    }else{
+                        let origin = await Origin.findOne({origin_id: originId})
+                        if(!origin){
+                            return res.status(400).json({
+                                success: false,
+                                message: `Origin with ID ${originId} is not exist`
+                            })
+                        }
+                    }
+                    weight = req.body.variantField.weight
+                    if(!weight){
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field Weight is required!"
+                        })
+                    }
+                    colorId = req.body.variantField.colorId
+                    if(!colorId){
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field Color ID is required!"
+                        })
+                    }else{
+                        let color = await Color.findOne({color_id: colorId})
+                        if(!color){
+                            return res.status(400).json({
+                                success: false,
+                                message: `Color with ID ${colorId} is not exist`
+                            })
+                        }
+                    }
+                    material = req.body.variantField.material
+                    if(!material){
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field Material is required!"
+                        })
+                    }
+                    maxRamUp = req.body.variantField.maxRamUp
+                    if(!maxRamUp){
+                        maxRamUp = "Cannot Upgrade"
+                    }
+                    maxDriveUp = req.body.variantField.maxDriveUp
+                    if(!maxDriveUp){
+                        maxDriveUp = "Cannot Upgrade"
+                    }
+                    if(req.body.variantField.whdSize){
+                        whdSize = {
+                            width : req.body.variantField.whdSize.width,
+                            height: req.body.variantField.whdSize.height,
+                            depth: req.body.variantField.whdSize.depth
+                        }
+                        if(!whdSize.width || !whdSize.height || ! whdSize.depth){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field whdsize Width, Height, Depth is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field whdsize required!"
+                        })
+                    }
+                    if(req.body.variantField.cpu){
+                        cpu = {
+                            brand: req.body.variantField.cpu.brand,
+                            name: req.body.variantField.cpu.name,
+                            model: req.body.variantField.cpu.model,
+                            minRate: req.body.variantField.cpu.minRate
+                        }
+                        if(!cpu.brand || !cpu.name || !cpu.model || !cpu.minRate){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field CPU Brand, Name, Model, Min rate is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field cpu required!"
+                        })
+                    }
+                    if(req.body.variantField.vga){
+                        vga = {
+                            brand: req.body.variantField.vga.brand,
+                            name: req.body.variantField.vga.name,
+                            model: req.body.variantField.vga.model
+                        }
+                        if(!vga.brand || !vga.name || !vga.model){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field VGA Brand, Name, Model is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field vga required!"
+                        })
+                    }
+                    if(req.body.variantField.ram){
+                        ram = {
+                            type: req.body.variantField.ram.type,
+                            storage: req.body.variantField.ram.storage,
+                            slots: req.body.variantField.ram.slots
+                        }
+                        if(!ram.type || !ram.storage || !ram.slots){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field RAM Type, Storage, Slots is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field ram required!"
+                        })
+                    }
+                    if(req.body.variantField.drive){
+                        drive = {
+                            type: req.body.variantField.drive.type,
+                            model: req.body.variantField.drive.model,
+                            storage: req.body.variantField.drive.storage,
+                            slots: req.body.variantField.drive.slots
+                        }
+                        if(!drive.type || !drive.model || !drive.storage || !drive.slots){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field Drive Type, Model, Storage, Slots is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field drive required!"
+                        })
+                    }
+                    if(req.body.variantField.screen){
+                        if(req.body.variantField.screen.resolution){
+                            screen = {
+                                size: req.body.variantField.screen.size,
+                                type: req.body.variantField.screen.type,
+                                resolution: {
+                                    width: req.body.variantField.screen.resolution.width,
+                                    height: req.body.variantField.screen.resolution.height
+                                },
+                                refreshRate: req.body.variantField.screen.refreshRate,
+                                colorRate: req.body.variantField.screen.colorRate,
+                                ratio: req.body.variantField.screen.ratio
+                            }
+                            if(!screen.size || !screen.type || !screen.resolution.width || !screen.resolution.height || !screen.refreshRate || !screen.colorRate || !screen.ratio){
+                                return res.status(400).json({
+                                    success: false,
+                                    message: "Screen Size, Type, Resolution (w,h), Refresh Rate, Color rate, Ratio is all required!"
+                                })
+                            }
+                        }else{
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field screen resolution required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field screen required!"
+                        })
+                    }
+                    if(req.body.variantField.port){
+                        if(req.body.variantField.port.usb1 && req.body.variantField.port.hdmi1){
+                            port = {
+                                wifi: req.body.variantField.port.wifi,
+                                bluetooth: req.body.variantField.port.bluetooth,
+                                webcam: req.body.variantField.port.webcam,
+                                usb1: {
+                                    type: req.body.variantField.port.usb1.type,
+                                    slots: req.body.variantField.port.usb1.slots
+                                },
+                                hdmi1: {
+                                    version: req.body.variantField.port.hdmi1.version,
+                                    slots: req.body.variantField.port.hdmi1.slots
+                                },
+                                cardReaderSlots: req.body.variantField.port.cardReaderSlots,
+                                jack3p5mmSlots: req.body.variantField.port.jack3p5mmSlots
+                            }
+                            if(!port.wifi || !port.bluetooth || !port.usb1.type || !port.usb1.slots || !port.hdmi1.version || !port.hdmi1.slots){
+                                return res.status(400).json({
+                                    success: false,
+                                    message: "Variant field Wifi, Bluetooth, USB Port, HDMI Port is all required!"
+                                })
+                            }else{
+                                if(!port.webcam){
+                                    port.webcam = "None"
+                                }
+                                if(req.body.variantField.port.usb2){
+                                    port.usb2.type = req.body.variantFieldport.usb2.type
+                                    port.usb2.slots = req.body.variantField.port.usb2.slots
+                                }else{
+                                    port.usb2 = "None"
+                                }
+                                if(req.body.variantField.port.hdmi2){
+                                    port.hdmi2.version = req.body.variantFieldport.usb2.version
+                                    port.hdmi2.slots = req.body.variantField.port.usb2.slots
+                                }else{
+                                    port.hdmi2 = "None"
+                                }
+                                if(!port.cardReaderSlots){
+                                    port.cardReaderSlots = 0
+                                }
+                                if(!port.jack3p5mmSlots){
+                                    port.jack3p5mmSlots = 0
+                                }
+                            }
+                        }else{
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field port usb1, hdmi1 required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field port required!"
+                        })
+                    }
+                    if(req.body.variantField.os){
+                        os = {
+                            name: req.body.variantField.os.name,
+                            version: req.body.variantField.os.version
+                        }
+                        if(!os.name || !os.version){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field OS Name, Version is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field os required!"
+                        })
+                    }
+                    if(req.body.variantField.keyboard){
+                        keyboard = {
+                            type: req.body.variantField.keyboard.type,
+                            led: req.body.variantField.keyboard.led,
+                            hasNumpad: req.body.variantField.keyboard.hasNumpad,
+                            touchpad: req.body.variantField.keyboard.touchpad
+                        }
+                        if(!keyboard.type || !(keyboard.hasNumpad == true || keyboard.hasNumpad == false) || !keyboard.touchpad){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Variant field Keyboard Type, Has Numpad, Touchpad is all required!"
+                            })
+                        }else{
+                            if(!keyboard.led){
+                                keyboard.led = "None"
+                            }
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field keyboard required!"
+                        })
+                    }
+                    if(req.body.variantField.power){
+                        power = {
+                            capability: req.body.variantField.power.capability,
+                            supply: req.body.variantField.power.supply
+                        }
+                        if(!power.capability || !power.supply){
+                            return res.status(400).json({
+                                success: false,
+                                message: "Power capability, supply is all required!"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            success: false,
+                            message: "Variant field power required!"
+                        }) 
+                    }
+                    if(req.body.variantField.gears){
+                        req.body.variantField.gears.forEach(gear => {
+                            gears.push(gear)
+                        });
+                    }
+                }else{
+                    return res.status(400).json({
+                        success: false,
+                        message: "variantField is required in body!"
+                    })
+                }
+                
+                let sku = "L" + originId + "Y" + mfgYear.toString() + "C" + colorId
+                let variantFieldId = variantId + "FIELD"
+                
+                let checkSkuExist = await LaptopVariant.findOne({sku: sku})
+                if(checkSkuExist){
+                    return res.status(400).json({
+                        success: false,
+                        message: `SKU ${sku} has been used by other variant`
+                    })
+                }
+
+                let variant = new LaptopVariant({
+                    variant_id: variantId,
+                    product_id: productId,
+                    variant_name: variantName,
+                    sku: sku,
+                    price: price,
+                    promotion_id: promotionId,
+                    stock: stock
+                })
+
+                let variantField = new LaptopVariantField({
+                    variant_field_id: variantFieldId,
+                    variant_id: variantId,
+                    part_number: partNumber,
+                    mfg_year: mfgYear,
+                    origin_id: originId,
+                    weight: weight,
+                    color_id: colorId,
+                    material: material,
+                    max_ram_up: maxRamUp,
+                    max_drive_up: maxDriveUp,
+                    whd_size: whdSize,
+                    cpu: cpu,
+                    vga: vga,
+                    ram: ram,
+                    drive: drive,
+                    screen: screen,
+                    port: port,
+                    os: os,
+                    power: power,
+                    gears: gears
+                })
+
+                let fieldSave = await variantField.save()
+                if(!fieldSave){
+                    return res.status(400).json({
+                        success: false,
+                        message: "Cannot save laptop variant field"
+                    })
+                }else{
+                    let variantSave = await variant.save()
+                    if(!variantSave){
+                        await LaptopVariantField.findOneAndDelete({variant_field_id: variantFieldId})
+                        return res.status(400).json({
+                            success: false,
+                            message: "Cannot save laptop variant"
+                        })
+                    }else{
+                        return res.status(200).json({
+                            success: true,
+                            message: "Save laptop variant succeeded",
                             variant: variant,
                             fields: variantField
                         })
