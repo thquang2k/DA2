@@ -97,13 +97,15 @@ const getProductById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: `Product ID is required!`
             })
         }else{
             let product = await Product.findOne({product_id: productId})
             if(!product){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Cannot find product with ID ${productId}!`
                 })
             }else{
@@ -111,30 +113,38 @@ const getProductById = async (req, res, next) => {
                     case "LT":
                         let laptop = await Laptop.findOne({product_id:productId})
                         if(!laptop){
-                            res.status(400).json({
+                            return res.status(400).json({
+                                success: false,
                                 message: `Cannot find laptop with ID ${productId}!`
                             })
                         }else{
-                            product = laptop
+                            return res.status(200).json({
+                                success: true,
+                                message: `Get product with ID ${productId} succeeded!`,
+                                product: laptop
+                            })
                         }
-                        break;
                     case "CP":
                         let cellphone = await Cellphone.findOne({product_id:productId})
                         if(!cellphone){
-                            res.status(400).json({
-                                message: `Cannot find laptop with ID ${productId}!`
+                            return res.status(400).json({
+                                success: false,
+                                message: `Cannot find product with ID ${productId}!`
                             })
                         }else{
-                            product = cellphone
+                            return res.status(200).json({
+                                success: true,
+                                message: `Get product with ID ${productId} succeeded!`,
+                                product: cellphone
+                            })
                         }
-                        break;
                     default:
                         break;
                 }
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
@@ -143,24 +153,27 @@ const getLaptopById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: `Product ID is required!`
             })
         }else{
-            let product = await Laptop.findOne({product_id: productId})
-            if(!product){
-                res.status(400).json({
+            let laptop = await Laptop.findOne({product_id: productId})
+            if(!laptop){
+                return res.status(400).json({
+                    success: false,
                     message: `Cannot find laptop with ID ${productId}!`
                 })
             }else{
-                res.status(200).json({
-                    message: `Get Laptop with Product ID ${productId} succeeded!`,
-                    product: product
+                return res.status(200).json({
+                    success: true,
+                    message: `Get Laptop with ID ${productId} succeeded!`,
+                    laptop: laptop
                 })
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
@@ -169,24 +182,27 @@ const getCellphoneById = async (req, res, next) => {
     try {
         let productId = req.params.productId
         if(!productId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: `Product ID is required!`
             })
         }else{
-            let product = await Cellphone.findOne({product_id: productId})
-            if(!product){
-                res.status(400).json({
+            let cellphone = await Cellphone.findOne({product_id: productId})
+            if(!cellphone){
+                return res.status(400).json({
+                    success: false,
                     message: `Cannot find cellphone with ID ${productId}!`
                 })
             }else{
-                res.status(200).json({
+                return res.status(200).json({
+                    success: true,
                     message: `Get cellphone with Product ID ${productId} succeeded!`,
-                    product: product
+                    cellphone: cellphone
                 })
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: `Error: ${error.message}`
         })
     }
