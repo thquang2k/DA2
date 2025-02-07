@@ -1680,6 +1680,88 @@ const updateCellphoneVariantById = async (req, res, next) => {
     }
 }
 
+const deleteLaptopVariantById = async (req, res, next) => {
+    try {
+        let variantId = req.params.variantId
+        if(!variantId){
+            res.status(400).json({
+                message: "Variant ID is required"
+            })
+        }else{
+            let variant = await LaptopVariant.findOne({variant_id: variantId})
+            let field = await LaptopVariantField.findOne({variant_id: variantId})
+            if(!variant || !field){
+                res.status(400).json({
+                    message: `Laptop variant or field with variant ID ${variantId} is not exist!`
+                })
+            }else{
+                let deleteVariant = await LaptopVariant.findOneAndDelete({variant_id: variantId})
+                let deleteField = await LaptopVariantField.findOneAndDelete({variant_id: variantId})
+                if(!deleteVariant || !deleteField){
+                    if(!deleteVariant){
+                        await variant.save()
+                    }
+                    if(!deleteField){
+                        await field.save()
+                    }
+                    res.status(400).json({
+                        message: `Cannot remove Laptop variant with ID ${variantId}!`
+                    })
+                }else{
+                    res.status(200).json({
+                        message: `Remove laptop variant with ID ${variantId} succeeded!`,
+                    })
+                }
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
+
+const deleteCellphoneVariantById = async (req, res, next) => {
+    try {
+        let variantId = req.params.variantId
+        if(!variantId){
+            res.status(400).json({
+                message: "Variant ID is required"
+            })
+        }else{
+            let variant = await CellphoneVariant.findOne({variant_id: variantId})
+            let field = await CellphoneVariantField.findOne({variant_id: variantId})
+            if(!variant || !field){
+                res.status(400).json({
+                    message: `Cellphone variant or field with variant ID ${variantId} is not exist!`
+                })
+            }else{
+                let deleteVariant = await CellphoneVariant.findOneAndDelete({variant_id: variantId})
+                let deleteField = await CellphoneVariantField.findOneAndDelete({variant_id: variantId})
+                if(!deleteVariant || !deleteField){
+                    if(!deleteVariant){
+                        await variant.save()
+                    }
+                    if(!deleteField){
+                        await field.save()
+                    }
+                    res.status(400).json({
+                        message: `Cannot remove Cellphone variant with ID ${variantId}!`
+                    })
+                }else{
+                    res.status(200).json({
+                        message: `Remove cellphone variant with ID ${variantId} succeeded!`,
+                    })
+                }
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
+
 module.exports = {
     getAllCellphoneVariantsByProductId,
     getAllLaptopVariantsByProductId,
@@ -1688,5 +1770,7 @@ module.exports = {
     createLaptopVariant,
     createCellphoneVariant,
     updateLaptopVariantById,
-    updateCellphoneVariantById
+    updateCellphoneVariantById,
+    deleteLaptopVariantById,
+    deleteCellphoneVariantById
 }

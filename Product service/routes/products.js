@@ -17,6 +17,7 @@ router.post('/laptop/add', productController.addLaptop)
 router.put('/laptop/update/:productId', productController.updateLaptopById)
 router.put('/laptop/detail/:productId/variant/update/:variantId', variantController.updateLaptopVariantById)
 router.delete('/laptop/delete/:productId', productController.removeLaptopById)
+router.delete('/laptop/detail/:productId/variant/delete/:variantId', variantController.deleteLaptopVariantById)
 
 router.get('/cellphone', productController.getAllCellphone)
 router.get('/cellphone/detail/:productId', productController.getCellphoneById)
@@ -26,5 +27,6 @@ router.post('/cellphone/add', productController.addCellphone)
 router.put('/cellphone/update/:productId', productController.updateCellphoneById)
 router.put('/cellphone/detail/:productId/variant/update/:variantId', variantController.updateCellphoneVariantById)
 router.delete('/cellphone/delete/:productId', productController.removeCellphoneById)
+router.delete('/cellphone/detail/:productId/variant/delete/:variantId', variantController.deleteCellphoneVariantById)
 
 module.exports = router;
