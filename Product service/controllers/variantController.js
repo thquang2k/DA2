@@ -31,10 +31,18 @@ const getAllLaptopVariantsByProductId = async (req, res, next) => {
                         message: `Cannot get Laptop with ID ${productId}!`
                     })
                 }else{
+                    let variantList = []
+                    for (let index = 0; index < variants.length; index++) {
+                        let field = await LaptopVariantField.findOne({variant_id: variants[index].variant_id})
+                        variantList.push({
+                            variant: variants[index],
+                            field: field
+                        })
+                    }
                     return res.status(200).json({
                         success: true,
                         message: `Get all variants of laptop with ID ${productId} succeeded!`,
-                        variants: variants
+                        variantsList: variantList
                     })
                 }
             }
@@ -69,9 +77,17 @@ const getAllCellphoneVariantsByProductId = async (req, res, next) => {
                         message: `Cannot get Cellphone with ID ${productId}!`
                     })
                 }else{
+                    let variantList = []
+                    for (let index = 0; index < variants.length; index++) {
+                        let field = await CellphoneVariantField.findOne({variant_id: variants[index].variant_id})
+                        variantList.push({
+                            variant: variants[index],
+                            field: field
+                        })
+                    }
                     return res.status(200).json({
                         success: true,
-                        message: `Get all variants of laptop with ID ${productId} succeeded!`,
+                        message: `Get all variants of cellphone with ID ${productId} succeeded!`,
                         variants: variants
                     })
                 }
