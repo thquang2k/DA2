@@ -3,6 +3,10 @@ const Laptop  = require('../models/laptopModel')
 const Cellphone = require('../models/cellphoneModel')
 const Brand = require('../models/brandModel')
 const Category = require('../models/categoryModel')
+const LaptopVariant = require('../models/laptopVariantModel')
+const CellphoneVariant = require('../models/cellphoneVariantModel')
+const LaptopVariantField = require('../models/laptopVariantFieldModel')
+const CellphoneVariantField = require('../models/cellphoneVariantFieldModel')
 
 const getAllLaptop = async (req, res, next) => {
     try {
@@ -818,10 +822,20 @@ const removeProductById = async (req, res, next) => {
                     case "LT":
                         oldItem = await Laptop.findOne({product_id: productId})
                         remove = await Laptop.findOneAndDelete({product_id: productId})
+                        let laptopVariants = await LaptopVariant.find({product_id: productId})
+                        laptopVariants.forEach(async (variant) => {
+                            await LaptopVariantField.findOneAndDelete({variant_id: variant.variant_id})
+                            await LaptopVariant.findOneAndDelete({variant_id: variant.variant_id})
+                        });
                         break;
                     case "CP":
                         oldItem = await Cellphone.findOne({product_id: productId})
                         remove = await Cellphone.findOneAndDelete({product_id: productId})
+                        let cellphoneVariants = await CellphoneVariant.find({product_id: productId})
+                        cellphoneVariants.forEach(async (variant) => {
+                            await CellphoneVariantField.findOneAndDelete({variant_id: variant.variant_id})
+                            await CellphoneVariant.findOneAndDelete({variant_id: variant.variant_id})
+                        });
                         break;
                     default:
                         res.status(400).json({
