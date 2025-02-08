@@ -13,6 +13,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const init = require('./init')
+init.init()
+
 var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 var vnpRouter = require('./routes/vnp');

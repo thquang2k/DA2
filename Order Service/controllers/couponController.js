@@ -78,8 +78,10 @@ const createCoupon = async (req, res, next) => {
         }else{
             if(req.body.discountRate){
                 coupon.discount_rate = req.body.discountRate
+                coupon.discount_amount = 0
             }else{
                 coupon.discount_amount = req.body.discountAmount
+                coupon.discount_rate = 0
             }
         }
         coupon.coupon_id = coupon._id.toString()

@@ -27,6 +27,10 @@ const orderDetailSchema = new mongoose.Schema({
     price: {
         type: Number,
         default: 0
+    },
+    product_img: {
+        type: String,
+        required: true
     }
 })
 

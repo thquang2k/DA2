@@ -10,6 +10,14 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    fullname: {
+        type: String,
+        required: true
+    },
+    phone_number: {
+        type: String,
+        required: true
+    },
     address_id: {
         type: String,
         required: true
@@ -28,6 +36,10 @@ const orderSchema = new mongoose.Schema({
     },
     coupon_id: {
         type: String
+    },
+    discount_amount: {
+        type: Number,
+        default: 0
     },
     total_cost: {
         type: Number,

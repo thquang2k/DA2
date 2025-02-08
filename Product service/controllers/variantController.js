@@ -490,7 +490,7 @@ const createLaptopVariant = async (req, res, next) => {
                             has_numpad: req.body.variantField.keyboard.hasNumpad,
                             touchpad: req.body.variantField.keyboard.touchpad
                         }
-                        if(!keyboard.keyboard_type || !(keyboard.hasNumpad == true || keyboard.hasNumpad == false) || !keyboard.touchpad){
+                        if(!keyboard.keyboard_type || !(keyboard.has_numpad == true || keyboard.has_numpad == false) || !keyboard.touchpad){
                             return res.status(400).json({
                                 success: false,
                                 message: "Variant field Keyboard Type, Has Numpad, Touchpad is all required!"
