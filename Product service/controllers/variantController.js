@@ -487,7 +487,7 @@ const createLaptopVariant = async (req, res, next) => {
                         keyboard = {
                             keyboard_type: req.body.variantField.keyboard.type,
                             led: req.body.variantField.keyboard.led,
-                            hasNumpad: req.body.variantField.keyboard.hasNumpad,
+                            has_numpad: req.body.variantField.keyboard.hasNumpad,
                             touchpad: req.body.variantField.keyboard.touchpad
                         }
                         if(!keyboard.keyboard_type || !(keyboard.hasNumpad == true || keyboard.hasNumpad == false) || !keyboard.touchpad){
