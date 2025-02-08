@@ -576,6 +576,7 @@ const createLaptopVariant = async (req, res, next) => {
                     ram: ram,
                     drive: drive,
                     screen: screen,
+                    keyboard: keyboard,
                     port: port,
                     os: os,
                     power: power,
