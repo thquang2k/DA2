@@ -86,6 +86,21 @@ const createOrder = async (req, res, next) => {
             const promotion_id = array[i];
             
         }
+        let deliveryCost
+        if(address.city != "TP Hồ Chí Minh"){
+            deliveryCost = 35000
+        }else{
+            deliveryCost = 20000
+        }
+
+        let order = new OrderDetail({
+            order_id: "temp",
+            user_id: user.user_id,
+            address_id: address.address_id,
+            total_item: cart.total_item,
+            total_price: cart.total_price,
+
+        })
         return res.status(200).json({
             success: true,
             message: `Fetch user data succedded`,

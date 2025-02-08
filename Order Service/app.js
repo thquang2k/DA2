@@ -19,5 +19,7 @@ var vnpRouter = require('./routes/vnp');
 app.use('/vnp', vnpRouter);
 var orderRoute = require('./routes/orders');
 app.use('/orders', orderRoute);
+var couponRoute = require('./routes/coupons');
+app.use('/coupons', couponRoute);
 
 module.exports = app;
