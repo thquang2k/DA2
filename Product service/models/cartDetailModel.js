@@ -21,6 +21,9 @@ const cartDetailSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    promotion_id: {
+        type: String
+    },
     quantity: {
         type: Number,
         default: 1

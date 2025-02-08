@@ -159,6 +159,7 @@ const addToCart = async (req, res, next) => {
                     product_name: product.product_name,
                     variant_name: variant.variant_name,
                     variant_price: variant.price,
+                    promotion_id: variant.promotion_id,
                     quantity: quantity,
                     subtotal: subtotal
                 })

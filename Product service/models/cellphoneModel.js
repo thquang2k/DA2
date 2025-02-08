@@ -35,6 +35,10 @@ const cellphoneSchema = new mongoose.Schema({
     category_id: {
         type: String,
         default: "CP"
+    },
+    price: {
+        type: Number,
+        required: true
     }
 },{
     timestamps: true

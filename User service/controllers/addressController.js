@@ -78,7 +78,7 @@ const getAddressById = async (req, res, next) => {
                 message: `Address ID is required`
             })
         }else{
-            let address = Address.findOne({address_id:addressId})
+            let address = await Address.findOne({address_id:addressId})
             if(!address){
                 return res.status(400).json({
                     success: false,

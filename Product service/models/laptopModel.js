@@ -35,6 +35,10 @@ const laptopSchema = new mongoose.Schema({
     category_id: {
         type: String,
         default: "LT"
+    },
+    price: {
+        type: Number,
+        required: true
     }
 },
 {

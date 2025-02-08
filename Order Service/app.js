@@ -17,5 +17,7 @@ var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 var vnpRouter = require('./routes/vnp');
 app.use('/vnp', vnpRouter);
+var orderRoute = require('./routes/orders');
+app.use('/orders', orderRoute);
 
 module.exports = app;

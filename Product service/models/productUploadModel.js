@@ -7,8 +7,10 @@ const productUploadSchema = new mongoose.Schema({
         unique: true
     },
     product_id: {
-        type: String,
-        required: true
+        type: String
+    },
+    variant_id: {
+         type: String
     },
     upload_src: {
         type: String,
