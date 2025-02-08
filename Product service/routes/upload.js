@@ -1,19 +1,15 @@
 var express = require('express');
 var router = express.Router();
 
+const uploadController = require('../controllers/uploadController')
+
 const upload = require('../upload')
 
-router.post("/upload", upload.single("file"), (req, res) => {
-	// check whether req.file contians the file
-	// if not multer is failed to parse so notify the client
-	if (!req.file) {
-		res.status(413).send(`File not uploaded!, Please 
-							attach jpeg file under 5 MB`);
-		return;
-	}
-	// successfull completion
-	console.log(req)
-	res.status(201).send("Files uploaded successfully");
-});
+router.get("/", uploadController.getAllUploads)
+router.get("/:productId", uploadController.getUploadsByProductId)
+router.get("/detail/:uploadId", uploadController.getUploadById)
+router.post("/upload/:productId", upload.single("file"), uploadController.uploadImage);
+router.put("/update/:uploadId", upload.single("file"), uploadController.updateUploadById);
+router.delete("/delete/:uploadId", uploadController.deleteUploadById);
 
 module.exports = router;

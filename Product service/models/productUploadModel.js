@@ -9,8 +9,9 @@ const productUploadSchema = new mongoose.Schema({
     product_id: {
         type: String
     },
-    variant_id: {
-         type: String
+    is_feature: {
+         type: Boolean,
+         default: false
     },
     upload_src: {
         type: String,
