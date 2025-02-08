@@ -1,5 +1,10 @@
 const Cart = require('../models/cartModel')
 const CartDetail = require('../models/cartDetailModel')
+const Laptop = require('../models/laptopModel')
+const LaptopVariant = require('../models/laptopVariantModel')
+const Cellphone = require('../models/cellphoneModel')
+const CellphoneVariant = require('../models/cellphoneVariantModel')
+
 
 const getCurrentUserCart = async (req, res, next) => {
     try {
@@ -72,6 +77,105 @@ const createCart = async (req, res, next) => {
         })
     }
 }
+const addToCart = async (req, res, next) => {
+    try {
+        let user = req.user
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: "Not login"
+            })
+        }
+        let cart = await Cart.findOne({user_id: userId})
+        if(!cart){
+            return res.status(400).json({
+                success: false,
+                message: `Cannot find cart with user ID ${userId}`
+            })
+        }
+
+        let variantId = req.params.variantId
+        if(!variantId){
+            return res.status(400).json({
+                success: false,
+                message: "variant ID is required",
+            })
+        }else{
+            let quantity = req.body.quantity
+            if(quantity == 0 || quantity % 1 !== 0){
+                return res.status(400).json({
+                    success: false,
+                    message: `Quantity cannot equal 0 or is a float`
+                })
+            }
+
+            let detail = await CartDetail.findOne({cart_id: cart.cart_id, variant_id: variantId})
+            if(detail){
+                detail.quantity += quantity
+                detail.subtotal = detail.variant_price * detail.quantity
+
+                let save = await detail.save()
+                if(!save){
+                    return res.status(400).json({
+                        success: false,
+                        message: `Cannot add to cart`
+                    })
+                }else{
+                    return res.status(200).json({
+                        success: true,
+                        message: "Add to cart succeeded",
+                        cart: cart,
+                        detail: detail
+                    })
+                }
+            }
+            let variant = await LaptopVariant.findOne({variant_id: variantId})
+            let product
+            if(!variant){
+                variant = await CellphoneVariant.findOne({variant_id: variantId})
+                if(!variant){
+                    return res.status(400).json({
+                        success: false,
+                        message: `Cannot find variant with ID ${variantId}`
+                    })
+                }
+                product = await Cellphone.findOne({product_id: variant.product_id})
+            }else{
+                product = await Laptop.findOne({product_id: variant.product_id})
+            }
+
+            let subtotal = quantity * variant.price
+            let cartDetail = new CartDetail({
+                cart_id: cart.cart_id,
+                variant_id: variant.variant_id,
+                product_name: product.product_name,
+                variant_name: variant.variant_name,
+                variant_price: variant.price,
+                quantity: quantity,
+                subtotal: subtotal
+            })
+
+            let save = await cartDetail.save()
+            if(!save){
+                return res.status(400).json({
+                    success: false,
+                    message: `Cannot add to cart`
+                })
+            }else{
+                return res.status(200).json({
+                    success: true,
+                    message: "Add to cart succeeded",
+                    cart: cart,
+                    detail: cartDetail
+                })
+            }
+        }
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
 
 const removeCart = async (req, res, next) => {
     try {
@@ -122,5 +226,6 @@ const removeCart = async (req, res, next) => {
 module.exports = {
     getCurrentUserCart,
     createCart,
-    removeCart
+    removeCart,
+    addToCart
 }
