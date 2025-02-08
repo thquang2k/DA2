@@ -5,15 +5,28 @@ const getCurrentUserCart = async (req, res, next) => {
     try {
         let user = req.user
         if(!user){
-            return res.status(200).json({
+            return res.status(400).json({
                 success: false,
                 message: "Not login"
             })
         }
+        let cart = await Cart.findOne({user_id: userId})
+        if(!cart){
+            return res.status(400).json({
+                success: false,
+                message: `Cannot find cart with user ID ${userId}`
+            })
+        }
+
+        let cartDetail
+        if(cart){
+            cartDetail = await CartDetail.findOne({cart_id: cart.cart_id})
+        }
         return res.status(200).json({
             success: true,
-            message: "OK",
-            user: user
+            message: "Get cart succeeded",
+            cart: cart,
+            detail: cartDetail
         })
     } catch (error) {
         return res.status(500).json({
