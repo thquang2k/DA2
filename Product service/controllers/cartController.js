@@ -15,11 +15,11 @@ const getCurrentUserCart = async (req, res, next) => {
                 message: "Not login"
             })
         }
-        let cart = await Cart.findOne({user_id: userId})
+        let cart = await Cart.findOne({user_id: user.userId})
         if(!cart){
             return res.status(400).json({
                 success: false,
-                message: `Cannot find cart with user ID ${userId}`
+                message: `Cannot find cart with user ID ${user.userId}`
             })
         }
 
@@ -86,11 +86,11 @@ const addToCart = async (req, res, next) => {
                 message: "Not login"
             })
         }
-        let cart = await Cart.findOne({user_id: userId})
+        let cart = await Cart.findOne({user_id: user.userId})
         if(!cart){
             return res.status(400).json({
                 success: false,
-                message: `Cannot find cart with user ID ${userId}`
+                message: `Cannot find cart with user ID ${user.userId}`
             })
         }
 
@@ -121,6 +121,14 @@ const addToCart = async (req, res, next) => {
                         message: `Cannot add to cart`
                     })
                 }else{
+                    detail = await CartDetail.find({cart_id: cart.cart_id})
+                    cart.total_item = 0
+                    cart.total_price = 0
+                    for (let i = 0; i < detail.length; i++) {
+                        cart.total_item += detail[i].quantity
+                        cart.total_price += detail[i].subtotal
+                    }
+                    await cart.save()
                     return res.status(200).json({
                         success: true,
                         message: "Add to cart succeeded",
@@ -128,46 +136,56 @@ const addToCart = async (req, res, next) => {
                         detail: detail
                     })
                 }
-            }
-            let variant = await LaptopVariant.findOne({variant_id: variantId})
-            let product
-            if(!variant){
-                variant = await CellphoneVariant.findOne({variant_id: variantId})
+            }else{
+                let variant = await LaptopVariant.findOne({variant_id: variantId})
+                let product
                 if(!variant){
+                    variant = await CellphoneVariant.findOne({variant_id: variantId})
+                    if(!variant){
+                        return res.status(400).json({
+                            success: false,
+                            message: `Cannot find variant with ID ${variantId}`
+                        })
+                    }
+                    product = await Cellphone.findOne({product_id: variant.product_id})
+                }else{
+                    product = await Laptop.findOne({product_id: variant.product_id})
+                }
+    
+                let subtotal = quantity * variant.price
+                let cartDetail = new CartDetail({
+                    cart_id: cart.cart_id,
+                    variant_id: variant.variant_id,
+                    product_name: product.product_name,
+                    variant_name: variant.variant_name,
+                    variant_price: variant.price,
+                    quantity: quantity,
+                    subtotal: subtotal
+                })
+    
+                let save = await cartDetail.save()
+                if(!save){
                     return res.status(400).json({
                         success: false,
-                        message: `Cannot find variant with ID ${variantId}`
+                        message: `Cannot add to cart`
+                    })
+                }else{
+                    let detail = await CartDetail.find({cart_id: cart.cart_id})
+                    cart.total_item = 0
+                    cart.total_price = 0
+                    for (let i = 0; i < detail.length; i++) {
+                        cart.total_item += detail[i].quantity
+                            cart.total_price += detail[i].subtotal
+                    }
+                    await cart.save()
+                    return res.status(200).json({
+                        success: true,
+                        message: "Add to cart succeeded",
+                        cart: cart,
+                        detail: cartDetail
                     })
                 }
-                product = await Cellphone.findOne({product_id: variant.product_id})
-            }else{
-                product = await Laptop.findOne({product_id: variant.product_id})
-            }
 
-            let subtotal = quantity * variant.price
-            let cartDetail = new CartDetail({
-                cart_id: cart.cart_id,
-                variant_id: variant.variant_id,
-                product_name: product.product_name,
-                variant_name: variant.variant_name,
-                variant_price: variant.price,
-                quantity: quantity,
-                subtotal: subtotal
-            })
-
-            let save = await cartDetail.save()
-            if(!save){
-                return res.status(400).json({
-                    success: false,
-                    message: `Cannot add to cart`
-                })
-            }else{
-                return res.status(200).json({
-                    success: true,
-                    message: "Add to cart succeeded",
-                    cart: cart,
-                    detail: cartDetail
-                })
             }
         }
     } catch (error) {
