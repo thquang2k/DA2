@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const upload = require('../utils/upload')
+const upload = require('../upload')
 
 router.post("/upload", upload.single("file"), (req, res) => {
 	// check whether req.file contians the file

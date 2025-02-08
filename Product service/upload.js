@@ -4,7 +4,7 @@ const path = require("node:path");
 const storageConfig = multer.diskStorage({
 	// destinations is uploads folder 
 	// under the project directory
-	destination: path.join(__dirname, "public/uploads"),
+	destination: path.join(__dirname,"public/uploads"),
 	filename: (req, file, res) => {
 		// file name is prepended with current time
 		// in milliseconds to handle duplicate file names
@@ -32,9 +32,15 @@ const upload = multer({
 	storage: storageConfig,
 	limits: {
 		// limits file size to 5 MB
-		fileSize: 1024 * 1024 * 5
+		fileSize: 3072 * 3072 * 15
 	},
 	fileFilter: fileFilterConfig,
-});
+	
+}).fields(
+	[
+		{
+			productId:'profile'
+		}
+	];
 
 module.exports = upload;

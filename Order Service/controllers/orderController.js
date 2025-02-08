@@ -159,24 +159,38 @@ const createOrder = async (req, res, next) => {
         order.order_id.replace('new ObjectId(', '')
         order.order_id.replace(')','')
 
+        for (let i = 0; i < cartDetail.length; i++) {
+            let orderDetail = new OrderDetail({
+                order_id: order.order_id,
+                product_name: cartDetail[i].product_name,
+                variant_id: cartDetail[i].variant_id,
+                unit_price: cartDetail[i].variant_price,
+                quantity: cartDetail[i].quantity,
+                promotion_id: cartDetail[i].promotion_id,
+                product_img: cartDetail[i].product_img
+
+            })
+            console.log(orderDetail)
+            if(cartDetail[i].promotion_id){
+                let promotionFetch = await axios.get(`${process.env.PRODUCT_SERVICE_URL}/promotion/${orderDetail.promotion_id}`)
+                if(promotionFetch){
+                    let promotionData = promotionFetch.data.promotion
+                    orderDetail.price = (1 - promotionData.promotion_rate)* orderDetail.unit_price
+                }
+            }else{
+                orderDetail.price = orderDetail.unit_price
+            }
+            
+            await orderDetail.save()
+        }
         let save = await order.save()
         if(save){
-            for (let i = 0; i < cartDetail.length; i++) {
-                let orderDetail = new OrderDetail({
-                    order_id: order.order_id,
-                    product_name: cartDetail[i].product_name,
-                    variant_id: cartDetail[i].variant_id,
-                    unit_price: cartDetail[i].variant_price,
-                    quantity: cartDetail[i].quantity,
-                    promotion_id: cartDetail[i].promotion_id
-
-                })
-                
-            }
+            let details = await OrderDetail.find({order_id: order.order_id})
             return res.status(200).json({
                 success: true,
                 message: `Fetch user data succedded`,
-                user: userData.data.user
+                order: order,
+                detail: details
             })
         }else{
             return res.status(400).json({

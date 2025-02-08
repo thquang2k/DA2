@@ -296,6 +296,14 @@ const addProduct = async (req, res, next) => {
             })
         }
 
+        let price = req.body.price
+        if(!price){
+            return res.status(400).json({
+                success: false,
+                message: "Product price is required"
+            })
+        }
+
         let save, product
         switch (categoryId) {
             case "LT":
@@ -315,7 +323,8 @@ const addProduct = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     vga_brand: vgaBrand,
                     size: productSize,
-                    feature_img_src: featureImgSrc
+                    feature_img_src: featureImgSrc,
+                    price: price
                 })
                 break;
             case "CP":
@@ -447,10 +456,15 @@ const addLaptop = async (req, res, next) => {
                 message: "Product feature img is required"
             })
         }
-        let productCount = await Product.countDocuments()
-        let productId = "LT" + brandId + (productCount + 1)
+        let price = req.body.price
+        if(!price){
+            return res.status(400).json({
+                success: false,
+                message: "Product price is required"
+            })
+        }
         const laptop = new Laptop({
-                    product_id: productId,
+                    product_id: "temp",
                     brand_id: brandId,
                     product_name: productName,
                     description: productDescription,
@@ -459,6 +473,10 @@ const addLaptop = async (req, res, next) => {
                     size: productSize,
                     feature_img_src: featureImgSrc
                 })
+        laptop.product_id = laptop._id.toString()
+        laptop.product_id.replace('new ObjectId', '')
+        laptop.product_id.replace(')', '')
+        let productId = laptop.product_id
 
         let save = await laptop.save()
         if(save){
@@ -556,10 +574,9 @@ const addCellphone = async (req, res, next) => {
                 message: "Product feature img is required"
             })
         }
-        let productCount = await Product.countDocuments()
-        let productId = "CP" + brandId + (productCount + 1)
+        
         const cellphone = new Cellphone({
-                    product_id: productId,
+                    product_id: "temp",
                     brand_id: brandId,
                     product_name: productName,
                     description: productDescription,
@@ -568,6 +585,11 @@ const addCellphone = async (req, res, next) => {
                     size: productSize,
                     feature_img_src: featureImgSrc
                 })
+
+        laptop.product_id = laptop._id.toString()
+        laptop.product_id.replace('new ObjectId', '')
+        laptop.product_id.replace(')', '')
+        let productId = laptop.product_id
 
         let save = await cellphone.save()
         if(save){
@@ -660,6 +682,10 @@ const updateLaptopById = async (req, res, next) => {
                 let featureImgSrc = req.body.featureImgSrc
                 if(featureImgSrc){
                     laptop.feature_img_src = featureImgSrc
+                }
+                let price = req.body.price
+                if(price){
+                    laptop.price = price
                 }
 
                 let save = await laptop.save()
@@ -758,6 +784,10 @@ const updateCellphoneById = async (req, res, next) => {
                 let featureImgSrc = req.body.featureImgSrc
                 if(featureImgSrc){
                     cellphone.feature_img_src = featureImgSrc
+                }
+                let price = req.body.price
+                if(price){
+                    cellphone.price = price
                 }
 
                 let save = await cellphone.save()
