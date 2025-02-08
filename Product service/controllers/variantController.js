@@ -88,7 +88,7 @@ const getAllCellphoneVariantsByProductId = async (req, res, next) => {
                     return res.status(200).json({
                         success: true,
                         message: `Get all variants of cellphone with ID ${productId} succeeded!`,
-                        variants: variants
+                        variantList: variantList
                     })
                 }
             }
@@ -104,24 +104,27 @@ const getLaptopVariantById = async (req, res, next) => {
     try {
         let variantId = req.params.variantId
         if(!variantId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Variant ID is required"
             })
         }else{
             let variant = await LaptopVariant.find({variant_id: variantId})
             if(!variant){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Laptop variant with ID ${variantId} is not exist!`
                 })
             }else{
-                res.status(200).json({
+                return res.status(200).json({
+                    success: true,
                     message: `Get laptop variant with ID ${productId} succeeded!`,
                     variant: variant
                 })
             }
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             Error: `Error ${error.message}`
         })
     }
@@ -131,17 +134,20 @@ const getCellphoneVariantById = async (req, res, next) => {
     try {
         let variantId = req.params.variantId
         if(!variantId){
-            res.status(400).json({
+            return res.status(400).json({
+                success: false,
                 message: "Variant ID is required"
             })
         }else{
             let variant = await CellphoneVariant.find({variant_id: variantId})
             if(!variant){
-                res.status(400).json({
+                return res.status(400).json({
+                    success: false,
                     message: `Cellphone variant with ID ${variantId} is not exist!`
                 })
             }else{
-                res.status(200).json({
+                return res.status(200).json({
+                    success: true,
                     message: `Get cellphone variant with ID ${productId} succeeded!`,
                     variant: variant
                 })
