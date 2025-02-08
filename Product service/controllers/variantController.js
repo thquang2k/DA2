@@ -209,8 +209,6 @@ const createLaptopVariant = async (req, res, next) => {
                         message: "Variant is required in body!"
                     })
                 }
-                let variantId = await LaptopVariant.countDocuments({product_id: productId})
-                variantId = productId + "V" + variantId.toString()
                 
                 //Field info
                 let partNumber, mfgYear, originId, weight, colorId, material, maxRamUp, maxDriveUp, whdSize, cpu, vga, ram, drive, screen, port, os, keyboard, power, gears
@@ -342,7 +340,7 @@ const createLaptopVariant = async (req, res, next) => {
                             storage: req.body.variantField.ram.storage,
                             slots: req.body.variantField.ram.slots
                         }
-                        if(!ram.type || !ram.storage || !ram.slots){
+                        if(!ram.ram_type || !ram.storage || !ram.slots){
                             return res.status(400).json({
                                 success: false,
                                 message: "Variant field RAM Type, Storage, Slots is all required!"
@@ -361,7 +359,7 @@ const createLaptopVariant = async (req, res, next) => {
                             storage: req.body.variantField.drive.storage,
                             slots: req.body.variantField.drive.slots
                         }
-                        if(!drive.type || !drive.model || !drive.storage || !drive.slots){
+                        if(!drive.drive_type || !drive.model || !drive.storage || !drive.slots){
                             return res.status(400).json({
                                 success: false,
                                 message: "Variant field Drive Type, Model, Storage, Slots is all required!"
@@ -386,7 +384,7 @@ const createLaptopVariant = async (req, res, next) => {
                                 colorRate: req.body.variantField.screen.colorRate,
                                 ratio: req.body.variantField.screen.ratio
                             }
-                            if(!screen.size || !screen.type || !screen.resolution.width || !screen.resolution.height || !screen.refreshRate || !screen.colorRate || !screen.ratio){
+                            if(!screen.size || !screen.screen_type || !screen.resolution.width || !screen.resolution.height || !screen.refreshRate || !screen.colorRate || !screen.ratio){
                                 return res.status(400).json({
                                     success: false,
                                     message: "Screen Size, Type, Resolution (w,h), Refresh Rate, Color rate, Ratio is all required!"
@@ -531,7 +529,6 @@ const createLaptopVariant = async (req, res, next) => {
                 }
                 
                 let sku = "L" + originId + "Y" + mfgYear.toString() + "C" + colorId
-                let variantFieldId = variantId + "FIELD"
                 
                 let checkSkuExist = await LaptopVariant.findOne({sku: sku})
                 if(checkSkuExist){
@@ -542,7 +539,7 @@ const createLaptopVariant = async (req, res, next) => {
                 }
 
                 let variant = new LaptopVariant({
-                    variant_id: variantId,
+                    variant_id: "temp",
                     product_id: productId,
                     variant_name: variantName,
                     sku: sku,
@@ -550,9 +547,13 @@ const createLaptopVariant = async (req, res, next) => {
                     promotion_id: promotionId,
                     stock: stock
                 })
+                variant.variant_id = variant._id.toString()
+                variant.variant_id.replace('new Object Id(', '')
+                variant.variant_id.replace(')', '')
+                let variantId = variant.variant_id
 
                 let variantField = new LaptopVariantField({
-                    variant_field_id: variantFieldId,
+                    variant_field_id: "temp",
                     variant_id: variantId,
                     part_number: partNumber,
                     mfg_year: mfgYear,
@@ -573,6 +574,9 @@ const createLaptopVariant = async (req, res, next) => {
                     power: power,
                     gears: gears
                 })
+                variantField.variant_field_id = variantField._id.toString()
+                variantField.variant_field_id.replace('new Object Id(', '')
+                variantField.variant_field_id.replace(')', '')
 
                 let fieldSave = await variantField.save()
                 if(!fieldSave){
@@ -662,9 +666,6 @@ const createCellphoneVariant = async (req, res, next) => {
                         message: `variant is required in body!`
                     })
                 }
-
-                let variantId = await CellphoneVariant.countDocuments({product_id: productId})
-                variantId = productId + "V" + variantId.toString()
                 //Field info
                 let mfgYear, originId, weight, colorId, material, waterResist, ramStorage, gpu, whdSize, cpu, connectors, storage, cameras, screen, power, gears
                 if(req.body.variantField){
@@ -930,7 +931,6 @@ const createCellphoneVariant = async (req, res, next) => {
                 
                 
                 let sku = "C" + originId + "R" + storage.rom + "C" + colorId
-                let variantFieldId = variantId + "FIELD"
                 
                 let checkSkuExist = await CellphoneVariant.findOne({sku: sku})
                 if(checkSkuExist){
@@ -941,7 +941,7 @@ const createCellphoneVariant = async (req, res, next) => {
                 }
 
                 let variant = new CellphoneVariant({
-                    variant_id: variantId,
+                    variant_id: "temp",
                     product_id: productId,
                     variant_name: variantName,
                     sku: sku,
@@ -949,9 +949,13 @@ const createCellphoneVariant = async (req, res, next) => {
                     promotion_id: promotionId,
                     stock: stock
                 })
+                variant.variant_id = variant._id.toString()
+                variant.variant_id.replace('new Object Id(', '')
+                variant.variant_id.replace(')', '')
+                let variantId = variant.variant_id
 
                 let variantField = new CellphoneVariantField({
-                    variant_field_id: variantFieldId,
+                    variant_field_id: "temp",
                     variant_id: variantId,
                     mfg_year: mfgYear,
                     origin_id: originId,
@@ -971,6 +975,9 @@ const createCellphoneVariant = async (req, res, next) => {
                     power: power,
                     gears: gears
                 })
+                variantField.variant_field_id = variantField._id.toString()
+                variantField.variant_field_id.replace('new Object Id(', '')
+                variantField.variant_field_id.replace(')', '')
 
                 let fieldSave = await variantField.save()
                 if(!fieldSave){

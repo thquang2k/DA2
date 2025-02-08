@@ -242,14 +242,15 @@ const addProduct = async (req, res, next) => {
                 })
             }
         }
-
-        let productCount = await Product.countDocuments()
-        let productId = categoryId + brandId + (productCount + 1)
         let genericProduct = new Product({
-            product_id: productId,
+            product_id: "temp",
             category_id: categoryId,
             brand_id: brandId
         })
+        genericProduct.product_id = genericProduct._id.toString()
+        genericProduct.product_id.replace('new Object Id(', '')
+        genericProduct.product_id.replace(')', '')
+        let productId = genericProduct.product_id
 
         let productName = req.body.productName
         if(!productName){
