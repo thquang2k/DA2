@@ -107,7 +107,7 @@ const addToCart = async (req, res, next) => {
                     success: false,
                     message: `Quantity cannot equal 0 or is a float`
                 })
-            }
+            } 
 
             let detail = await CartDetail.findOne({cart_id: cart.cart_id, variant_id: variantId})
             if(detail){
@@ -138,6 +138,12 @@ const addToCart = async (req, res, next) => {
                 }
             }else{
                 let variant = await LaptopVariant.findOne({variant_id: variantId})
+                if(quantity > variant.stock){
+                    return res.status(400).json({
+                        success: false,
+                        message: `Quantity is greater than stock. Stock current: ${variant.stock}`
+                    })
+                }
                 let product
                 if(!variant){
                     variant = await CellphoneVariant.findOne({variant_id: variantId})
@@ -156,6 +162,7 @@ const addToCart = async (req, res, next) => {
                 let cartDetail = new CartDetail({
                     cart_id: cart.cart_id,
                     variant_id: variant.variant_id,
+                    product_img: product.feature_img_src,
                     product_name: product.product_name,
                     variant_name: variant.variant_name,
                     variant_price: variant.price,
