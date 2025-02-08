@@ -82,6 +82,10 @@ const createOrder = async (req, res, next) => {
         }
         let cart = cartData.data.cart
         let cartDetail = cartData.data.detail
+        for (let i = 0; i < cartDetail.length; i++) {
+            const promotion_id = array[i];
+            
+        }
         return res.status(200).json({
             success: true,
             message: `Fetch user data succedded`,

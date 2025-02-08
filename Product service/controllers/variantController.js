@@ -675,8 +675,16 @@ const createCellphoneVariant = async (req, res, next) => {
                     })
                 }
                 //Field info
-                let mfgYear, originId, weight, colorId, material, waterResist, ramStorage, gpu, whdSize, cpu, connectors, storage, cameras, screen, power
+                let mfgYear, originId, weight, colorId, material, waterResist, ramStorage, gpu, whdSize, cpu, connectors, storage, screen, power
                 let gears = []
+                let cameras = {
+                    backCamera: [],
+                    frontCamera: {
+                        camera_type: "",
+                        resolution: "",
+                        video_resolution: ""
+                    }
+                }
                 if(req.body.variantField){
                     mfgYear = req.body.variantField.mfgYear
                     if(!mfgYear){
