@@ -217,7 +217,8 @@ const createLaptopVariant = async (req, res, next) => {
                 }
                 
                 //Field info
-                let partNumber, mfgYear, originId, weight, colorId, material, maxRamUp, maxDriveUp, whdSize, cpu, vga, ram, drive, screen, port, os, keyboard, power, gears
+                let partNumber, mfgYear, originId, weight, colorId, material, maxRamUp, maxDriveUp, whdSize, cpu, vga, ram, drive, screen, port, os, keyboard, power
+                let gears = []
                 if(req.body.variantField){
                     partNumber = req.body.variantField.partNumber
                     if(!partNumber){
@@ -673,7 +674,8 @@ const createCellphoneVariant = async (req, res, next) => {
                     })
                 }
                 //Field info
-                let mfgYear, originId, weight, colorId, material, waterResist, ramStorage, gpu, whdSize, cpu, connectors, storage, cameras, screen, power, gears
+                let mfgYear, originId, weight, colorId, material, waterResist, ramStorage, gpu, whdSize, cpu, connectors, storage, cameras, screen, power
+                let gears = []
                 if(req.body.variantField){
                     mfgYear = req.body.variantField.mfgYear
                     if(!mfgYear){
