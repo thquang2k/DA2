@@ -39,5 +39,7 @@ var promtionRouter = require('./routes/promotions');
 app.use('/promotions', promtionRouter);
 var productRouter = require('./routes/products');
 app.use('/products', productRouter);
+var cartRouter = require('./routes/cart');
+app.use('/cart', cartRouter);
 
 module.exports = app;

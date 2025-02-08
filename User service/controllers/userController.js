@@ -1,3 +1,5 @@
+const axios = require('axios')
+
 const User = require('../models/userModel')
 const Role = require('../models/roleModel')
 const bcrypt = require('bcrypt')
@@ -119,22 +121,31 @@ const createUser = async (req, res, next) => {
             password: hashedPassword,
             role_id: roleId
         })
-        console.log(user)
         user.user_id = user._id.toString()
         user.user_id.replace('new Object Id(', '')
         user.user_id.replace(')', '')
         
-        let save = await user.save()
-        if(!save){
+        let data = { userId: user.user_id}
+        let response = await axios.post(`${process.env.PRODUCT_SERVICE_URL}/cart/create`, data)
+        console.log(response)
+        if(response.data.success){
+            let save = await user.save()
+            if(!save){
+                return res.status(400).json({
+                    success: false,
+                    message: "cannot save user"
+                })
+            }else{
+                return res.status(200).json({
+                    success: true,
+                    message: "created user!",
+                    user: user
+                })
+            }
+        }else{
             return res.status(400).json({
                 success: false,
-                message: "cannot save user"
-            })
-        }else{
-            return res.status(200).json({
-                success: true,
-                message: "created user!",
-                user: user
+                message: "Cannot post create cart request"
             })
         }
     } catch (error) {
@@ -379,11 +390,21 @@ const deleteUserById = async (req, res, next) => {
                     message: `User with ID ${userId} is not exist!`
                 })
             }else{
-                await User.deleteOne({user_id: userId})
-                return res.status(200).json({
-                    success: true,
-                    message: "deleted user!",
-                })
+                let data = { userId: user.user_id}
+                let response = await axios.delete(`${process.env.PRODUCT_SERVICE_URL}/cart/delete`, data)
+                if(response.data.success){
+                    await User.findOneAndDelete({user_id: userId})
+                    return res.status(200).json({
+                        success: true,
+                        message: "deleted user!",
+                    })
+
+                }else{
+                    return res.status(400).json({
+                        success: false,
+                        message: "cannot remove cart from delete request!",
+                    })
+                }
                 
             }
         }
