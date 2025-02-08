@@ -872,14 +872,16 @@ const createCellphoneVariant = async (req, res, next) => {
                             });
                         }
                         if(!req.body.variantField.cameras.frontCamera){
-                            cameras.frontCamera = "None"
+                            cameras.front_camera = "None"
                         }else{
-                            cameras.frontCamera.type = req.body.variantField.cameras.frontCamera.type
+                            
+                            cameras.frontCamera.camera_type = req.body.variantField.cameras.frontCamera.type
                             cameras.frontCamera.resolution = req.body.variantField.cameras.frontCamera.resolution
-                            cameras.frontCamera.videoResolution = req.body.cameras.frontCamera.videoResolution
+                            cameras.frontCamera.video_resolution = req.body.variantField.cameras.frontCamera.videoResolution
                         }
                         
                     }
+                    
                     if(req.body.variantField.screen){
                         if(req.body.variantField.screen.resolution){
                             screen = {

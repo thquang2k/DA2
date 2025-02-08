@@ -35,7 +35,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         required: true
     },
     ram_storage: {
-        type: Number,
+        type: String,
         required: true
     },
     gpu: {
@@ -47,7 +47,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         depth: Number
     },
     screen: {
-        size: Number,
+        size: String,
         screen_type: String,
         resolution: {
             width: Number,
@@ -77,7 +77,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         gps_support: [String]
     },
     storage: {
-        rom: Number,
+        rom: String,
         drive_support: String,
         max_drive_support: Number
     },
@@ -99,7 +99,7 @@ const cellphoneVariantFieldSchema = new mongoose.Schema({
         charger: String
     },
     gears:[
-        {name: String}
+        String
     ]
     
 })
