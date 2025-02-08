@@ -889,6 +889,11 @@ const removeLaptopById = async (req, res, next) => {
                 })
             }else{
                 let remove = await Laptop.findOneAndDelete({product_id: productId})
+                let variants = await LaptopVariant.find({product_id: productId})
+                variants.forEach(async (variant) => {
+                    await LaptopVariantField.findOneAndDelete({variant_id: variant.variant_id})
+                    await LaptopVariant.findOneAndDelete({variant_id: variant.variant_id})
+                });
                 if(remove){
                     let productRemove = await Product.findOneAndDelete({product_id: productId})
                     if(productRemove){
@@ -935,6 +940,11 @@ const removeCellphoneById = async (req, res, next) => {
                 })
             }else{
                 let remove = await Cellphone.findOneAndDelete({product_id: productId})
+                let variants = await CellphoneVariant.find({product_id: productId})
+                variants.forEach(async (variant) => {
+                    await CellphoneVariantField.findOneAndDelete({variant_id: variant.variant_id})
+                    await CellphoneVariant.findOneAndDelete({variant_id: variant.variant_id})
+                });
                 if(remove){
                     let productRemove = await Product.findOneAndDelete({product_id: productId})
                     if(productRemove){
