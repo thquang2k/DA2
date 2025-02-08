@@ -130,16 +130,18 @@ const createAddress = async (req,res,next) => {
                 message: "Specific address is required"
             })
         }
-        let addressCount = await Address.countDocuments({ user_id: user.userId})
-        let addressId = user.userId + "Address" + (addressCount + 1)
+        
         let address = new Address({
-            address_id: addressId,
+            address_id: "temp",
             user_id: user.userId,
             city: city,
             district: district,
             avenue: avenue,
             specific: specific
         })
+        address.address_id = address._id.toString()
+        address.address_id.replace('new Object Id(', '')
+        address.address_id.replace(')', '')
 
         let save = await address.save()
         if(save){
