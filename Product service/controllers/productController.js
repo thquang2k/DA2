@@ -344,7 +344,8 @@ const addProduct = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     os: os,
                     size: productSize,
-                    feature_img_src: featureImgSrc
+                    feature_img_src: featureImgSrc,
+                    price: price
                 })
                 break;
             default:
@@ -471,7 +472,8 @@ const addLaptop = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     vga_brand: vgaBrand,
                     size: productSize,
-                    feature_img_src: featureImgSrc
+                    feature_img_src: featureImgSrc,
+                    price: price
                 })
         laptop.product_id = laptop._id.toString()
         laptop.product_id.replace('new ObjectId', '')
@@ -583,7 +585,8 @@ const addCellphone = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     os: os,
                     size: productSize,
-                    feature_img_src: featureImgSrc
+                    feature_img_src: featureImgSrc,
+                    price: price
                 })
 
         laptop.product_id = laptop._id.toString()

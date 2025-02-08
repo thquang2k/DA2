@@ -36,11 +36,5 @@ const upload = multer({
 	},
 	fileFilter: fileFilterConfig,
 	
-}).fields(
-	[
-		{
-			productId:'profile'
-		}
-	];
-
+})
 module.exports = upload;
