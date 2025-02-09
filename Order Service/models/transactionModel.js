@@ -14,8 +14,8 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    phone_number: {
-        type: String,
+    transaction_date: {
+        type: Date,
         required: true
     },
     address_id: {

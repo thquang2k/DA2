@@ -589,7 +589,7 @@ const addCellphone = async (req, res, next) => {
                     price: price
                 })
 
-        cellphone.product_id = laptop._id.toString()
+        cellphone.product_id = cellphone._id.toString()
         cellphone.product_id.replace('new ObjectId', '')
         cellphone.product_id.replace(')', '')
         let productId = cellphone.product_id
