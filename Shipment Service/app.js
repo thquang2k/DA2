@@ -5,6 +5,7 @@ var logger = require('morgan');
 const cors = require('cors')
 
 
+
 var app = express();
 
 app.use(logger('dev'));
@@ -24,15 +25,10 @@ app.use(
 
 const init = require('./init')
 init.init()
+
 var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
-var vnpRouter = require('./routes/vnp');
-app.use('/vnp', vnpRouter);
-var orderRoute = require('./routes/orders');
-app.use('/orders', orderRoute);
-var couponRoute = require('./routes/coupons');
-app.use('/coupons', couponRoute);
-var transactionRoute = require('./routes/transactions');
-app.use('/transactions', transactionRoute);
+var shipmentRouter = require('./routes/shipments');
+app.use('/shipments', shipmentRouter);
 
 module.exports = app;
