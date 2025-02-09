@@ -18,6 +18,12 @@ const getAllLaptop = async (req, res, next) => {
                 message: `Cannot get all laptops!`
             })
         }else{
+            for (let i = 0; i < laptops.length; i++) {
+                let upload = await Upload.findOne({product_id: laptops[i].product_id})
+                if(upload){
+                    laptops[i].feature_img_src = upload.upload_src                 
+                }
+            }
             return res.status(200).json({
                 success: true,
                 message: `Get all laptops succeeded`,
@@ -40,6 +46,12 @@ const getAllCellphone = async (req, res, next) => {
                 message: `Cannot get all cellphones!`
             })
         }else{
+            for (let i = 0; i < cellphones.length; i++) {
+                let upload = await Upload.findOne({product_id: cellphones[i].product_id})
+                if(upload){
+                    cellphones[i].feature_img_src = upload.upload_src                 
+                }
+            }
             return res.status(200).json({
                 success: true,
                 message: `Get all cellphones succeeded`,
