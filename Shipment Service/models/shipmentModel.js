@@ -10,6 +10,14 @@ const shipmentSchema  = new mongoose.Schema({
         type: String,
         required: true
     },
+    recipient_name: {
+        type: String,
+        required: true
+    },
+    recipient_phone_num: {
+        type: String,
+        required: true
+    },
     city: {
         type: String,
         required: true
@@ -30,9 +38,9 @@ const shipmentSchema  = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    retry: {
-        type: Number,
-        default: 0
+    status: {
+        type: String,
+        default: "Pending"
     }
 
 },

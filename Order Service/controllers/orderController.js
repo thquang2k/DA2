@@ -53,7 +53,7 @@ const getOrderById = async (req, res, next) => {
             })
         }
 
-        let detail = await OrderDetail.findOne({order_id: orderId})
+        let detail = await OrderDetail.find({order_id: orderId})
 
         return res.status(200).json({
             success: true,
@@ -233,8 +233,39 @@ const createOrder = async (req, res, next) => {
         })
     }
 }
+const updateOrderById = async (req, res, next) => {
+    try {
+        let orderId = req.params.orderId
+        let order = await Order.findOne({order_id: orderId})
+
+        
+        if(!order){
+            return res.status(200).json({
+                success: false,
+                message: `Cannot find order with ID ${orderId}`
+            })
+        }
+
+        if(req.body.status){
+            order.status = req.body.status
+        }
+
+        await order.save()
+        return res.status(200).json({
+            success: true,
+            message: `Updated order with ID ${orderId}`,
+            order: order
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error: ${error.message}`
+        })
+    }
+}
 module.exports = {
     getAllOrder,
     getOrderById,
-    createOrder
+    createOrder,
+    updateOrderById
 }

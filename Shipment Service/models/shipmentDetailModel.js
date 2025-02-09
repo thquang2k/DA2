@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const shipmentDetailSchema  = new mongoose.Schema({
     shipment_id: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     product_name: {
         type: String,
