@@ -4,8 +4,6 @@ var router = express.Router();
 const productController = require('../controllers/productController')
 const variantController = require('../controllers/variantController')
 
-const upload = require('../upload')
-
 router.get('/', productController.getAllProduct)
 router.get('/detail/:productId', productController.getProductById)
 router.post('/add', productController.addProduct)

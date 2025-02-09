@@ -161,8 +161,8 @@ const vnpIpn = async (req, res, next) => {
 }
 
 const vnpReturn =  async (req, res, next) => {
-    
-    let vnp_Params = req.query;
+    try {
+        let vnp_Params = req.query;
     if(vnp_Params['vnp_TransactionStatus'] != '00'){
         return res.status(400).json({
             success: false,
@@ -210,6 +210,11 @@ const vnpReturn =  async (req, res, next) => {
         return res.status(200).json({success: true, transaction: transaction, order: order})
     } else{
         return res.status(400).json({success: false, code: vnp_Params['vnp_ResponseCode']})
+    }
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error: ${error.message}`
+        })
     }
 }
 
