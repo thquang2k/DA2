@@ -569,6 +569,7 @@ const addCellphone = async (req, res, next) => {
                 message: "Product size is required"
             })
         }
+        let price = req.body.price
         if(!price){
             return res.status(400).json({
                 success: false,

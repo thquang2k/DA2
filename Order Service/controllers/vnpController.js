@@ -63,8 +63,9 @@ const createPaymentUrl = async (req, res, next) => {
     vnp_Params['vnp_TxnRef'] = orderId;
     vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
     vnp_Params['vnp_OrderType'] = 'other';
-    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_Amount'] = order.total_cost * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
+    console.log(returnUrl)
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
     if(bankCode !== null && bankCode !== ''){
@@ -148,7 +149,39 @@ const vnpIpn = async (req, res, next) => {
         res.status(200).json({RspCode: '97', Message: 'Checksum failed'})
     }
 }
+
+const vnpReturn =  async (req, res, next) => {
+    
+    let vnp_Params = req.query;
+
+    let secureHash = vnp_Params['vnp_SecureHash'];
+
+    delete vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHashType'];
+
+    vnp_Params = sortObject(vnp_Params);
+
+    let config = require('config');
+    let tmnCode = config.get('vnp_TmnCode');
+    let secretKey = config.get('vnp_HashSecret');
+
+    let querystring = require('qs');
+    let signData = querystring.stringify(vnp_Params, { encode: false });
+    let crypto = require("crypto");     
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");     
+
+    if(secureHash === signed){
+        //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
+
+        return res.status(200).json({success: true, params: vnp_Params})
+    } else{
+        return res.status(500).json({success: false, code: vnp_Params['vnp_ResponseCode']})
+    }
+}
+
 module.exports = {
     createPaymentUrl,
-    vnpIpn
+    vnpIpn,
+    vnpReturn
 }

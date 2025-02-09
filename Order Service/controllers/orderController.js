@@ -186,6 +186,7 @@ const createOrder = async (req, res, next) => {
         let save = await order.save()
         if(save){
             let details = await OrderDetail.find({order_id: order.order_id})
+
             return res.status(200).json({
                 success: true,
                 message: `Fetch user data succedded`,
