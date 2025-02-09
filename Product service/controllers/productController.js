@@ -7,6 +7,7 @@ const LaptopVariant = require('../models/laptopVariantModel')
 const CellphoneVariant = require('../models/cellphoneVariantModel')
 const LaptopVariantField = require('../models/laptopVariantFieldModel')
 const CellphoneVariantField = require('../models/cellphoneVariantFieldModel')
+const Upload = require('../models/productUploadModel')
 
 const getAllLaptop = async (req, res, next) => {
     try {
@@ -288,14 +289,25 @@ const addProduct = async (req, res, next) => {
             })
         }
 
-        let featureImgSrc = req.body.featureImgSrc
-        if(!featureImgSrc){
+        let featureImgSrc
+        if(!req.file){
             return res.status(400).json({
                 success: false,
                 message: "Product feature img is required"
             })
+        }else{
+            featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
+            let uploadImg = new Upload({
+                upload_id: "temp",
+                product_id: productId,
+                upload_src: featureImgSrc
+            })
+                uploadImg.upload_id = uploadImg._id.toString()
+                uploadImg.upload_id.replace('new ObjectId(', '')
+                uploadImg.upload_id.replace(')', '')
+                
+                await uploadImg.save()
         }
-
         let price = req.body.price
         if(!price){
             return res.status(400).json({
@@ -450,12 +462,24 @@ const addLaptop = async (req, res, next) => {
                 message: "Product size is required"
             })
         }
-        let featureImgSrc = req.body.featureImgSrc
-        if(!featureImgSrc){
+        let featureImgSrc
+        if(!req.file){
             return res.status(400).json({
                 success: false,
                 message: "Product feature img is required"
             })
+        }else{
+            featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
+            let uploadImg = new Upload({
+                upload_id: "temp",
+                product_id: productId,
+                upload_src: featureImgSrc
+            })
+                uploadImg.upload_id = uploadImg._id.toString()
+                uploadImg.upload_id.replace('new ObjectId(', '')
+                uploadImg.upload_id.replace(')', '')
+                
+                await uploadImg.save()
         }
         let price = req.body.price
         if(!price){
@@ -569,11 +593,29 @@ const addCellphone = async (req, res, next) => {
                 message: "Product size is required"
             })
         }
-        let featureImgSrc = req.body.featureImgSrc
-        if(!featureImgSrc){
+        let featureImgSrc
+        if(!req.file){
             return res.status(400).json({
                 success: false,
                 message: "Product feature img is required"
+            })
+        }else{
+            featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
+            let uploadImg = new Upload({
+                upload_id: "temp",
+                product_id: productId,
+                upload_src: featureImgSrc
+            })
+                uploadImg.upload_id = uploadImg._id.toString()
+                uploadImg.upload_id.replace('new ObjectId(', '')
+                uploadImg.upload_id.replace(')', '')
+                
+                await uploadImg.save()
+        }
+        if(!price){
+            return res.status(400).json({
+                success: false,
+                message: "Product price is required"
             })
         }
         
@@ -589,10 +631,10 @@ const addCellphone = async (req, res, next) => {
                     price: price
                 })
 
-        laptop.product_id = laptop._id.toString()
-        laptop.product_id.replace('new ObjectId', '')
-        laptop.product_id.replace(')', '')
-        let productId = laptop.product_id
+        cellphone.product_id = laptop._id.toString()
+        cellphone.product_id.replace('new ObjectId', '')
+        cellphone.product_id.replace(')', '')
+        let productId = cellphone.product_id
 
         let save = await cellphone.save()
         if(save){
@@ -682,9 +724,19 @@ const updateLaptopById = async (req, res, next) => {
                 if(productSize){
                     laptop.size = productSize
                 }
-                let featureImgSrc = req.body.featureImgSrc
-                if(featureImgSrc){
-                    laptop.feature_img_src = featureImgSrc
+                
+                if(req.file){
+                    featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
+                    let uploadImg = new Upload({
+                        upload_id: "temp",
+                        product_id: productId,
+                        upload_src: featureImgSrc
+                    })
+                        uploadImg.upload_id = uploadImg._id.toString()
+                        uploadImg.upload_id.replace('new ObjectId(', '')
+                        uploadImg.upload_id.replace(')', '')
+                        
+                        await uploadImg.save()
                 }
                 let price = req.body.price
                 if(price){
@@ -784,9 +836,18 @@ const updateCellphoneById = async (req, res, next) => {
                 if(productSize){
                     cellphone.size = productSize
                 }
-                let featureImgSrc = req.body.featureImgSrc
-                if(featureImgSrc){
-                    cellphone.feature_img_src = featureImgSrc
+                if(req.file){
+                    featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
+                    let uploadImg = new Upload({
+                        upload_id: "temp",
+                        product_id: productId,
+                        upload_src: featureImgSrc
+                    })
+                        uploadImg.upload_id = uploadImg._id.toString()
+                        uploadImg.upload_id.replace('new ObjectId(', '')
+                        uploadImg.upload_id.replace(')', '')
+                        
+                        await uploadImg.save()
                 }
                 let price = req.body.price
                 if(price){

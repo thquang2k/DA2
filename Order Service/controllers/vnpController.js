@@ -1,5 +1,7 @@
 const moment = require('moment')
-const config = require('config')
+const request = require('request');
+
+const Order = require('../models/orderModel')
 
 const createPaymentUrl = async (req, res, next) => {
     
