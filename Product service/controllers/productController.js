@@ -19,9 +19,13 @@ const getAllLaptop = async (req, res, next) => {
             })
         }else{
             for (let i = 0; i < laptops.length; i++) {
-                let upload = await Upload.findOne({product_id: laptops[i].product_id})
-                if(upload){
-                    laptops[i].feature_img_src = upload.upload_src                 
+                let uploads = await Upload.find({product_id: laptops[i].product_id})
+                if(uploads){
+                    laptops[i].feature_img_src = []
+                    for (let j = 0; i < uploads.length; j++) {
+                        laptops[i].feature_img_src.push(uploads[j].upload_src)
+                        
+                    }               
                 }
             }
             return res.status(200).json({
@@ -47,9 +51,13 @@ const getAllCellphone = async (req, res, next) => {
             })
         }else{
             for (let i = 0; i < cellphones.length; i++) {
-                let upload = await Upload.findOne({product_id: cellphones[i].product_id})
-                if(upload){
-                    cellphones[i].feature_img_src = upload.upload_src                 
+                let uploads = await Upload.find({product_id: cellphones[i].product_id})
+                if(uploads){
+                    cellphones[i].feature_img_src = []
+                    for (let j = 0; i < uploads.length; j++) {
+                        cellphones[i].feature_img_src.push(uploads[j].upload_src)
+                        
+                    }               
                 }
             }
             return res.status(200).json({
@@ -95,7 +103,7 @@ const getAllProduct = async (req, res, next) => {
                         })
                     }
                 }
-                let upload = await Upload.findOne({product_id: product.product_id})
+                let upload = await Upload.find({product_id: product.product_id})
                 productList.push({
                     item: item,
                     upload: upload
@@ -139,9 +147,14 @@ const getProductById = async (req, res, next) => {
                                 message: `Cannot find laptop with ID ${productId}!`
                             })
                         }else{
-                            let upload = await Upload.findOne({product_id: productId})
-                            if(upload){
-                                laptop.feature_img_src = upload.upload_src                 
+                            let uploads = await Upload.find({product_id: productId})
+                            if(uploads){
+                                laptop.feature_img_src = []
+                                for (let i = 0; i < uploads.length; i++) {
+                                    laptop.feature_img_src.push(uploads[i].upload_src)
+                                    
+                                }
+                                                 
                             }
                             return res.status(200).json({
                                 success: true,
@@ -157,9 +170,14 @@ const getProductById = async (req, res, next) => {
                                 message: `Cannot find product with ID ${productId}!`
                             })
                         }else{
-                            let upload = await Upload.findOne({product_id: productId})
-                            if(upload){
-                                cellphone.feature_img_src = upload.upload_src                 
+                            let uploads = await Upload.find({product_id: productId})
+                            if(uploads){
+                                cellphone.feature_img_src = []
+                                for (let i = 0; i < uploads.length; i++) {
+                                    cellphone.feature_img_src.push(uploads[i].upload_src)
+                                    
+                                }
+                                                 
                             }
                             return res.status(200).json({
                                 success: true,
@@ -194,9 +212,13 @@ const getLaptopById = async (req, res, next) => {
                     message: `Cannot find laptop with ID ${productId}!`
                 })
             }else{
-                let upload = await Upload.findOne({product_id: productId})
-                if(upload){
-                    laptop.feature_img_src = upload.upload_src                 
+                let uploads = await Upload.find({product_id: laptop.product_id})
+                if(uploads){
+                    laptop.feature_img_src = []
+                    for (let j = 0; i < uploads.length; j++) {
+                        laptop.feature_img_src.push(uploads[j].upload_src)
+                        
+                    }               
                 }
                 return res.status(200).json({
                     success: true,
@@ -229,9 +251,13 @@ const getCellphoneById = async (req, res, next) => {
                     message: `Cannot find cellphone with ID ${productId}!`
                 })
             }else{
-                let upload = await Upload.findOne({product_id: productId})
-                if(upload){
-                    cellphone.feature_img_src = upload.upload_src                 
+                let uploads = await Upload.find({product_id: cellphone.product_id})
+                if(uploads){
+                    cellphone.feature_img_src = []
+                    for (let j = 0; i < uploads.length; j++) {
+                        cellphone.feature_img_src.push(uploads[j].upload_src)
+                        
+                    }               
                 }
                 return res.status(200).json({
                     success: true,

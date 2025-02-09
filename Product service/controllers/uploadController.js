@@ -58,29 +58,32 @@ const getUploadById = async (req, res, next) => {
 
 const uploadImage = async (req, res) => {
     try {
-        if (!req.file) {
+        if (!req.files) {
             return res.status(413).json(
                 { success: false,
-                    message: `File not uploaded!, Please attach jpeg file under 5 MB`});
+                    message: `File not uploaded!, Please attach jpeg file`});
         }
         let productId = req.params.productId
-        
-        let src = `localhost:5002/uploads/${req.file.filename}`
-        let uploadImg = new Upload({
-            upload_id: "temp",
-            product_id: productId,
-            upload_src: src
-        })
-        uploadImg.upload_id = uploadImg._id.toString()
-        uploadImg.upload_id.replace('new ObjectId(', '')
-        uploadImg.upload_id.replace(')', '')
-
-        await uploadImg.save()
+        let uploads = []
+        for (let i = 0; i < req.files.length; i++) {
+            let src = `localhost:5002/uploads/${req.files[i].filename}`
+            let uploadImg = new Upload({
+                upload_id: "temp",
+                product_id: productId,
+                upload_src: src
+            })
+            uploadImg.upload_id = uploadImg._id.toString()
+            uploadImg.upload_id.replace('new ObjectId(', '')
+            uploadImg.upload_id.replace(')', '')
+    
+            await uploadImg.save()
+            uploads.push(uploadImg)
+        }
 
         return res.status(200).json({
             success: true,
             message: "Upload img succeeded",
-            upload: uploadImg
+            uploads: uploads
         })
         
     } catch (error) {
