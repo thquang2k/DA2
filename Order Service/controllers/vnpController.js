@@ -200,13 +200,14 @@ const vnpReturn =  async (req, res, next) => {
             description: description
         })
 
-        let save = await transaction.save()
+        let order = await Order.findOne({order_id: transaction.order_id})
+        order.status = "Paid"
+        let save =  await order.save()
         if(!save){
             return res.status(400).json({success: false, message: "Cannot save transaction"})
         }
-        let order = await Order.findOne({order_id: transaction.order_id})
-        order.status = "Paid"
-        await order.save()
+        transaction.user_id = order.user_id
+        await transaction.save()
         return res.status(200).json({success: true, transaction: transaction, order: order})
     } else{
         return res.status(400).json({success: false, code: vnp_Params['vnp_ResponseCode']})

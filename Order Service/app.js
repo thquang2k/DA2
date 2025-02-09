@@ -24,5 +24,7 @@ var orderRoute = require('./routes/orders');
 app.use('/orders', orderRoute);
 var couponRoute = require('./routes/coupons');
 app.use('/coupons', couponRoute);
+var transactionRoute = require('./routes/transactions');
+app.use('/transactions', transactionRoute);
 
 module.exports = app;
