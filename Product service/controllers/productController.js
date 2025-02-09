@@ -83,7 +83,11 @@ const getAllProduct = async (req, res, next) => {
                         })
                     }
                 }
-                productList.push(item)
+                let upload = await Upload.find({product_id: product.product_id})
+                productList.push({
+                    item: item,
+                    upload: upload
+                })
             }
             return res.status(200).json({
                 success: true,
@@ -123,10 +127,12 @@ const getProductById = async (req, res, next) => {
                                 message: `Cannot find laptop with ID ${productId}!`
                             })
                         }else{
+                            let upload = await Upload.find({product_id: productId})
                             return res.status(200).json({
                                 success: true,
                                 message: `Get product with ID ${productId} succeeded!`,
-                                product: laptop
+                                product: laptop,
+                                upload: upload
                             })
                         }
                     case "CP":
@@ -137,10 +143,12 @@ const getProductById = async (req, res, next) => {
                                 message: `Cannot find product with ID ${productId}!`
                             })
                         }else{
+                            let upload = await Upload.find({product_id: productId})
                             return res.status(200).json({
                                 success: true,
                                 message: `Get product with ID ${productId} succeeded!`,
-                                product: cellphone
+                                product: cellphone,
+                                upload: upload
                             })
                         }
                     default:
@@ -170,10 +178,12 @@ const getLaptopById = async (req, res, next) => {
                     message: `Cannot find laptop with ID ${productId}!`
                 })
             }else{
+                let upload = await Upload.find({product_id: productId})
                 return res.status(200).json({
                     success: true,
                     message: `Get Laptop with ID ${productId} succeeded!`,
-                    laptop: laptop
+                    laptop: laptop,
+                    upload: upload
                 })
             }
         }
@@ -193,16 +203,19 @@ const getCellphoneById = async (req, res, next) => {
             })
         }else{
             let cellphone = await Cellphone.findOne({product_id: productId})
+            
             if(!cellphone){
                 return res.status(400).json({
                     success: false,
                     message: `Cannot find cellphone with ID ${productId}!`
                 })
             }else{
+                let upload = await Upload.find({product_id: productId})
                 return res.status(200).json({
                     success: true,
                     message: `Get cellphone with Product ID ${productId} succeeded!`,
-                    cellphone: cellphone
+                    cellphone: cellphone,
+                    upload: upload
                 })
             }
         }
@@ -289,25 +302,6 @@ const addProduct = async (req, res, next) => {
             })
         }
 
-        let featureImgSrc
-        if(!req.file){
-            return res.status(400).json({
-                success: false,
-                message: "Product feature img is required"
-            })
-        }else{
-            featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
-            let uploadImg = new Upload({
-                upload_id: "temp",
-                product_id: productId,
-                upload_src: featureImgSrc
-            })
-                uploadImg.upload_id = uploadImg._id.toString()
-                uploadImg.upload_id.replace('new ObjectId(', '')
-                uploadImg.upload_id.replace(')', '')
-                
-                await uploadImg.save()
-        }
         let price = req.body.price
         if(!price){
             return res.status(400).json({
@@ -367,7 +361,7 @@ const addProduct = async (req, res, next) => {
                 })
                 break;
         }
-        save = await product.save();
+
         if(!save){
             return res.status(400).json({
                 success: false,
@@ -462,25 +456,7 @@ const addLaptop = async (req, res, next) => {
                 message: "Product size is required"
             })
         }
-        let featureImgSrc
-        if(!req.file){
-            return res.status(400).json({
-                success: false,
-                message: "Product feature img is required"
-            })
-        }else{
-            featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
-            let uploadImg = new Upload({
-                upload_id: "temp",
-                product_id: productId,
-                upload_src: featureImgSrc
-            })
-                uploadImg.upload_id = uploadImg._id.toString()
-                uploadImg.upload_id.replace('new ObjectId(', '')
-                uploadImg.upload_id.replace(')', '')
-                
-                await uploadImg.save()
-        }
+
         let price = req.body.price
         if(!price){
             return res.status(400).json({
@@ -592,25 +568,6 @@ const addCellphone = async (req, res, next) => {
                 success: false,
                 message: "Product size is required"
             })
-        }
-        let featureImgSrc
-        if(!req.file){
-            return res.status(400).json({
-                success: false,
-                message: "Product feature img is required"
-            })
-        }else{
-            featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
-            let uploadImg = new Upload({
-                upload_id: "temp",
-                product_id: productId,
-                upload_src: featureImgSrc
-            })
-                uploadImg.upload_id = uploadImg._id.toString()
-                uploadImg.upload_id.replace('new ObjectId(', '')
-                uploadImg.upload_id.replace(')', '')
-                
-                await uploadImg.save()
         }
         if(!price){
             return res.status(400).json({
@@ -724,20 +681,6 @@ const updateLaptopById = async (req, res, next) => {
                 if(productSize){
                     laptop.size = productSize
                 }
-                
-                if(req.file){
-                    featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
-                    let uploadImg = new Upload({
-                        upload_id: "temp",
-                        product_id: productId,
-                        upload_src: featureImgSrc
-                    })
-                        uploadImg.upload_id = uploadImg._id.toString()
-                        uploadImg.upload_id.replace('new ObjectId(', '')
-                        uploadImg.upload_id.replace(')', '')
-                        
-                        await uploadImg.save()
-                }
                 let price = req.body.price
                 if(price){
                     laptop.price = price
@@ -835,19 +778,6 @@ const updateCellphoneById = async (req, res, next) => {
                 let productSize = req.body.productSize
                 if(productSize){
                     cellphone.size = productSize
-                }
-                if(req.file){
-                    featureImgSrc = `localhost:5002/uploads/${req.file.filename}`
-                    let uploadImg = new Upload({
-                        upload_id: "temp",
-                        product_id: productId,
-                        upload_src: featureImgSrc
-                    })
-                        uploadImg.upload_id = uploadImg._id.toString()
-                        uploadImg.upload_id.replace('new ObjectId(', '')
-                        uploadImg.upload_id.replace(')', '')
-                        
-                        await uploadImg.save()
                 }
                 let price = req.body.price
                 if(price){

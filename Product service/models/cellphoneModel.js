@@ -29,10 +29,6 @@ const cellphoneSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    feature_img_src: {
-        type: String,
-        required: true
-    },
     category_id: {
         type: String,
         default: "CP"
