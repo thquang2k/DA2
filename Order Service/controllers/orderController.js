@@ -16,7 +16,7 @@ const getAllOrder = async (req, res, next) => {
 
         let orderList = []
         for (let i = 0; i < orders.length; i++) {
-            let detail = await OrderDetail.findOne({order_id: orders[i].order_id})
+            let detail = await OrderDetail.find({order_id: orders[i].order_id})
             if(!detail){
                 return res.status(400).json({
                     success: false,
@@ -24,7 +24,7 @@ const getAllOrder = async (req, res, next) => {
                 }) 
             }
             let orderItem = {
-                order: order[i],
+                order: orders[i],
                 detail: detail
             }
             orderList.push(orderItem)
@@ -34,6 +34,32 @@ const getAllOrder = async (req, res, next) => {
             success: true,
             message: "Get all orders succeeded",
             orderList: orderList
+        })
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error: ${error.message}`
+        })
+    }
+}
+
+const getOrderById = async (req, res, next) => {
+    try {
+        let orderId = req.params.orderId
+        let order = await Order.findOne({order_id: orderId})
+        if(!order){
+            return res.status(400).json({
+                success: false,
+                message: `Cannot find order with ID ${orderId}`
+            })
+        }
+
+        let detail = await OrderDetail.findOne({order_id: orderId})
+
+        return res.status(200).json({
+            success: true,
+            message: `Get order with ID ${orderId} succeeded`,
+            order: order,
+            detail: detail
         })
     } catch (error) {
         return res.status(500).json({
@@ -209,5 +235,6 @@ const createOrder = async (req, res, next) => {
 }
 module.exports = {
     getAllOrder,
+    getOrderById,
     createOrder
 }
