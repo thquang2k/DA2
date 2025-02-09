@@ -329,7 +329,7 @@ const addProduct = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     vga_brand: vgaBrand,
                     size: productSize,
-                    feature_img_src: featureImgSrc,
+                     
                     price: price
                 })
                 break;
@@ -350,7 +350,7 @@ const addProduct = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     os: os,
                     size: productSize,
-                    feature_img_src: featureImgSrc,
+                     
                     price: price
                 })
                 break;
@@ -472,7 +472,7 @@ const addLaptop = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     vga_brand: vgaBrand,
                     size: productSize,
-                    feature_img_src: featureImgSrc,
+                     
                     price: price
                 })
         laptop.product_id = laptop._id.toString()
@@ -585,7 +585,7 @@ const addCellphone = async (req, res, next) => {
                     cpu_brand: cpuBrand,
                     os: os,
                     size: productSize,
-                    feature_img_src: featureImgSrc,
+                     
                     price: price
                 })
 
