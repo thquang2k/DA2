@@ -9,4 +9,5 @@ router.get('/',fetchCurrentUser, cartController.getCurrentUserCart)
 router.post('/create', cartController.createCart)
 router.delete('/delete', cartController.removeCart)
 router.post('/add/:variantId', fetchCurrentUser, cartController.addToCart)
+router.delete('/remove/:variantId', fetchCurrentUser, cartController.removeFromCartByVariantId)
 module.exports = router;

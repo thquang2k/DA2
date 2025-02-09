@@ -40,6 +40,45 @@ const getCurrentUserCart = async (req, res, next) => {
     }
 }
 
+const removeFromCartByVariantId = async (req, res, next) => {
+    try {
+        let user = req.user
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: "Not login"
+            })
+        }
+        let cart = await Cart.findOne({user_id: user.userId})
+        if(!cart){
+            return res.status(400).json({
+                success: false,
+                message: `Cannot find cart with user ID ${user.userId}`
+            })
+        }
+        let variantId = req.params.variantId
+        let cartDetail = await CartDetail.findOne({cart_id: cart.cart_id, variant_id: variantId})
+        if(!cartDetail){
+            return res.status(400).json({
+                success: false,
+                message: `Variant with ID ${variantId} is not in cart`
+            })
+        }
+        cart.total_item -= cartDetail.quantity
+        cart.total_price -= cartDetail.subtotal
+        await cart.save()
+        await CartDetail.findOneAndDelete({cart_id: cart.cart_id, variant_id: variantId})
+        return res.status(200).json({
+            success: true,
+            message: `Removed variant with ID ${variantId} from cart`
+        })
+    } catch (error) {
+        return res.status(500).json({
+            Error: `Error ${error.message}`
+        })
+    }
+}
+
 const createCart = async (req, res, next) => {
     try {
         let userId = req.body.userId
@@ -253,5 +292,6 @@ module.exports = {
     getCurrentUserCart,
     createCart,
     removeCart,
-    addToCart
+    addToCart,
+    removeFromCartByVariantId
 }
