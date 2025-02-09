@@ -128,11 +128,11 @@ const getProductById = async (req, res, next) => {
                             })
                         }else{
                             let upload = await Upload.find({product_id: productId})
+                            laptop.feature_img_src = upload.upload_src
                             return res.status(200).json({
                                 success: true,
                                 message: `Get product with ID ${productId} succeeded!`,
                                 product: laptop,
-                                upload: upload
                             })
                         }
                     case "CP":
@@ -144,11 +144,11 @@ const getProductById = async (req, res, next) => {
                             })
                         }else{
                             let upload = await Upload.find({product_id: productId})
+                            cellphone.feature_img_src = upload.upload_src
                             return res.status(200).json({
                                 success: true,
                                 message: `Get product with ID ${productId} succeeded!`,
                                 product: cellphone,
-                                upload: upload
                             })
                         }
                     default:
@@ -179,11 +179,12 @@ const getLaptopById = async (req, res, next) => {
                 })
             }else{
                 let upload = await Upload.find({product_id: productId})
+                laptop.feature_img_src = upload.upload_src || "Not upload yet"
                 return res.status(200).json({
                     success: true,
                     message: `Get Laptop with ID ${productId} succeeded!`,
                     laptop: laptop,
-                    upload: upload
+                    
                 })
             }
         }
@@ -211,11 +212,11 @@ const getCellphoneById = async (req, res, next) => {
                 })
             }else{
                 let upload = await Upload.find({product_id: productId})
+                cellphone.feature_img_src = upload.upload_src || "Not upload yet"
                 return res.status(200).json({
                     success: true,
                     message: `Get cellphone with Product ID ${productId} succeeded!`,
-                    cellphone: cellphone,
-                    upload: upload
+                    cellphone: cellphone
                 })
             }
         }

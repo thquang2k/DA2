@@ -36,6 +36,9 @@ const laptopSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true
+    },
+    feature_img_src: {
+        type: String
     }
 },
 {

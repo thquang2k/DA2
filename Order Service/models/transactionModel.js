@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const orderSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     transaction_id: {
         type: String,
         required: true,
@@ -14,43 +14,18 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    transaction_date: {
-        type: Date,
-        required: true
-    },
-    address_id: {
+    method: {
         type: String,
         required: true
     },
-    total_item: {
-        type: Number,
-        default: 1
-    },
-    total_price: {
-        type: Number,
-        default: 0
-    },
-    delivery_cost: {
-        type: Number,
-        default: 0
-    },
-    coupon_id: {
+    description: {
         type: String
-    },
-    discount_amount: {
-        type: Number,
-        default: 0
-    },
-    total_cost: {
-        type: Number,
-        default: 0
-    },
-    status: {
-        type: String,
-        default: "Pending"
     }
-})
+},
+    {
+        timestamps: true
+    })
 
-const orderModel = mongoose.model("Order", orderSchema)
+const transactionModel = mongoose.model("Transaction", transactionSchema)
 
-module.exports = orderModel
+module.exports = transactionModel
