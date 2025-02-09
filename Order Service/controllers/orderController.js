@@ -84,7 +84,7 @@ const createOrder = async (req, res, next) => {
         let cart = cartData.data.cart
         let cartDetail = cartData.data.detail
         for (let i = 0; i < cartDetail.length; i++) {
-            const promotion_id = array[i];
+            //const promotion_id = array[i];
             
         }
         let deliveryCost
@@ -159,6 +159,7 @@ const createOrder = async (req, res, next) => {
         order.order_id.replace('new ObjectId(', '')
         order.order_id.replace(')','')
 
+        console.log(cartDetail)
         for (let i = 0; i < cartDetail.length; i++) {
             let orderDetail = new OrderDetail({
                 order_id: order.order_id,
@@ -170,8 +171,7 @@ const createOrder = async (req, res, next) => {
                 product_img: cartDetail[i].product_img
 
             })
-            console.log(orderDetail)
-            if(cartDetail[i].promotion_id){
+            if(cartDetail[i].promotion_id && cartDetail[i].promotion_id != 'None'){
                 let promotionFetch = await axios.get(`${process.env.PRODUCT_SERVICE_URL}/promotion/${orderDetail.promotion_id}`)
                 if(promotionFetch){
                     let promotionData = promotionFetch.data.promotion

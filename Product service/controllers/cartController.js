@@ -25,7 +25,7 @@ const getCurrentUserCart = async (req, res, next) => {
 
         let cartDetail
         if(cart){
-            cartDetail = await CartDetail.findOne({cart_id: cart.cart_id})
+            cartDetail = await CartDetail.find({cart_id: cart.cart_id})
         }
         return res.status(200).json({
             success: true,
@@ -138,12 +138,6 @@ const addToCart = async (req, res, next) => {
                 }
             }else{
                 let variant = await LaptopVariant.findOne({variant_id: variantId})
-                if(quantity > variant.stock){
-                    return res.status(400).json({
-                        success: false,
-                        message: `Quantity is greater than stock. Stock current: ${variant.stock}`
-                    })
-                }
                 let product
                 if(!variant){
                     variant = await CellphoneVariant.findOne({variant_id: variantId})
@@ -156,6 +150,12 @@ const addToCart = async (req, res, next) => {
                     product = await Cellphone.findOne({product_id: variant.product_id})
                 }else{
                     product = await Laptop.findOne({product_id: variant.product_id})
+                }
+                if(quantity > variant.stock){
+                    return res.status(400).json({
+                        success: false,
+                        message: `Quantity is greater than stock. Stock current: ${variant.stock}`
+                    })
                 }
     
                 let subtotal = quantity * variant.price
